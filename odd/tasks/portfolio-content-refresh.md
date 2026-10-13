@@ -218,3 +218,15 @@ Learning with R 2020), bringing the published list to fifteen. The confidentiali
 mentioned once, subtly, in the GitHub line and in the CV's visibility section. LinkedIn is removed
 from the CV, and the two references (Edwin Brito, Líder TIC Regional Cauca; Omar Trejos,
 Dinamizador TIC Regional Cauca) are recorded there rather than on the public page.
+
+L15 (fourth round, 2026-10-13): the user deleted the old repository and its GitHub Pages site —
+verified: `GET /repos/Andrez421/Andrez421.github.io` → 404, `https://andrez421.github.io/` → 404 and
+no `.github.io` repository remains — which closes the last open migration task (retiring the old
+Pages site). Re-checked at the same time: `asbit.me` → 200 and both redirects → 301, none of it
+depending on the deleted repository. Also in this round: the Global Talent entry was
+professionalised into on-site IT service delivery under a consultancy contract (the company's
+registered activity is computer consultancy and IT facilities management), with preventive and
+corrective maintenance and software configuration instead of help-desk wording; and the closing
+note in `Trabajo` was trimmed to the confidentiality sentence alone, with no repository names.
+Verified live: 61 i18n keys with no gaps or orphans, the new entry rendering in both languages, the
+served body hashing identically to the file, and Dokploy redeploying from the push by itself.
