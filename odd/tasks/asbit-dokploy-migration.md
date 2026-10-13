@@ -188,3 +188,17 @@ traffic never matches it: Redirect Rules are scoped per zone. Fix is to create i
 and to remove or disable the misplaced rule in the `asbit.me` zone (where only the `www` rule
 belongs). T7 stays pending until these Cloudflare fixes are verified, so the GitHub Pages
 fallback survives the troubleshooting window.
+
+L16 (T6 dashboard path blocked, 2026-10-13): the user's screenshot
+(`~/Imágenes/screenshot-2026-10-13_00-42-39.png`) shows the rule form filled in exactly as
+specified — custom filter expression `(http.host eq "asbit.dev")`, `Tipo: Dinámico`,
+`concat("https://asbit.me", http.request.uri.path)`, `301 - Permanent Redirect`, preserve query
+string on — yet saving fails with `action is required for action parameters`. Cloudflare's
+rulesets API requires a redirect rule to carry both `action: "redirect"` and
+`action_parameters` (see Create a redirect rule via API), so the dashboard is building an
+incomplete ruleset payload: the defect is in the panel's save path, not in the rule the user
+authored. Three ways around it, in order of effort: (1) retry from an incognito window or with
+the dashboard language set to English, in case a stale localized bundle is at fault; (2) create
+the rules and the `www` record through the Cloudflare API with a scoped token, which skips the
+dashboard entirely; (3) fall back to a Page Rule forwarding URL on `asbit.dev/*`
+(`https://asbit.me/$1`, 301) or account-level Bulk Redirects.
