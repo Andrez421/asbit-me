@@ -16,8 +16,13 @@ import puppeteer from 'puppeteer-core';
 const [urlA, urlB, outDir = '/tmp/visual'] = process.argv.slice(2);
 if (!urlA || !urlB) {
   console.error('usage: node tools/visual-check.mjs <urlA> <urlB> [outDir]');
+  console.error('env: WIDTH (default 1440) HEIGHT (default 900) THEME (light|dark)');
   process.exit(2);
 }
+const WIDTH = Number(process.env.WIDTH ?? 1440);
+const HEIGHT = Number(process.env.HEIGHT ?? 900);
+const THEME = process.env.THEME ?? '';
+const suffix = `${WIDTH}${THEME ? '-' + THEME : ''}`;
 mkdirSync(outDir, { recursive: true });
 
 const browser = await puppeteer.launch({
@@ -28,8 +33,9 @@ const browser = await puppeteer.launch({
 
 async function shoot(url, name) {
   const page = await browser.newPage();
-  await page.setViewport({ width: 1440, height: 900 });
+  await page.setViewport({ width: WIDTH, height: HEIGHT });
   await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }]);
+  if (THEME) await page.evaluateOnNewDocument((t) => localStorage.setItem('theme', t), THEME);
   await page.goto(url, { waitUntil: 'networkidle0', timeout: 60000 });
   await page.evaluate(() => document.fonts.ready);
   // the only time-dependent pixels on the page
@@ -71,14 +77,14 @@ async function shoot(url, name) {
       fcp: Math.round(fcp.startTime ?? 0),
     };
   });
-  const file = `${outDir}/${name}.png`;
+  const file = `${outDir}/${name}-${suffix}.png`;
   await page.screenshot({ path: file, fullPage: true });
   await page.close();
   return { file, metrics };
 }
 
-const A = await shoot(urlA, 'old');
-const B = await shoot(urlB, 'new');
+const A = await shoot(urlA, 'old', suffix);
+const B = await shoot(urlB, 'new', suffix);
 await browser.close();
 
 const diff = (a, b) => {
@@ -96,7 +102,7 @@ const report = (label, a, b) => {
 
 const pixel = diff(A.file, B.file);
 const threshold = Number(process.env.MAX_DIFF_PIXELS ?? 0);
-console.log(report('DOM / timing (old vs new)', A.metrics, B.metrics));
+console.log(report(`DOM / timing (old vs new) — ${WIDTH}px${THEME ? ' ' + THEME : ''}`, A.metrics, B.metrics));
 console.log(`\npixel diff: ${pixel.text} differing pixels (threshold ${threshold})`);
 console.log(`  ${A.file}\n  ${B.file}`);
 writeFileSync(`${outDir}/report.json`, JSON.stringify({ old: A.metrics, new: B.metrics, diff: pixel.text }, null, 2));
