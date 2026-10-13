@@ -4,11 +4,13 @@ import ProjectCard from './ProjectCard.astro';
 
 /** The card that used to start open in the runtime version. */
 const openId = 'pgaa';
+import CodePanel from './CodePanel.astro';
 ---
 
 <section id="work" class="inv">
-  <div class="in">
-    <div class="sh rv"><h2 data-i18n="h.work">Trabajo</h2><p data-i18n="d.work">Lo que he puesto en producción y algunos proyectos propios. Abre cada uno para ver cómo está armado.</p></div>
+  <CodePanel index={3} />
+  <div class="in relative z-[1] mx-auto max-w-[1400px]">
+    <div class="sh rv flex items-end justify-between gap-8 pb-[1.2rem] mb-[3.2rem] max-mq800:flex-col max-mq800:items-start max-mq800:gap-4"><h2 data-i18n="h.work">Trabajo</h2><p data-i18n="d.work">Lo que he puesto en producción y algunos proyectos propios. Abre cada uno para ver cómo está armado.</p></div>
     <ul class="plist" id="plist">
       {PROJECTS.map((p) => <ProjectCard project={p} open={p.id === openId} />)}
     </ul>

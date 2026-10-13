@@ -42,6 +42,17 @@ const FAKE_CLOCK = `
   })();
 `;
 
+/** Phase of each marquee plus the width of one repetition, for rate comparison. */
+const MQ_SAMPLE = () => {
+  const $$ = (s) => [...document.querySelectorAll(s)];
+  return $$('.mq').map((m) => {
+    const half = m.scrollWidth / 3 || 1;
+    const x = /translate3d\((-?[\d.]+)px/.exec(m.style.transform || '');
+    const skew = /skewX\((-?[\d.]+)deg/.exec(m.style.transform || '');
+    return { phase: x ? Number(x[1]) : null, half, skew: skew ? skew[1] : null };
+  });
+};
+
 /** Values the effect layer writes, sampled from the live DOM. */
 const SAMPLE = () => {
   const $ = (s) => document.querySelector(s);
@@ -58,7 +69,10 @@ const SAMPLE = () => {
     time: Math.round(window.__now()),
     frames: true,
     kin,
-    marquee: $$('.mq').map((m) => m.style.transform),
+    // The marquee translation is compared by *rate*, not by absolute phase: the
+    // starting phase is arbitrary in a seamless loop (and the old version seeded
+    // it from a fallback-font measurement). Content width is compared directly.
+    marquee: $$('.mq').map((m) => Math.round((m.scrollWidth / 3) * 100) / 100),
     progress: $('#prog')?.style.transform ?? '',
     lens: $$('.code.hot').map((c) => c.style.maskPosition),
     reveals: $$('.rv.in-v').length,
@@ -96,8 +110,21 @@ async function run(url) {
     window.scrollTo(0, 0);
   });
   await new Promise((r) => setTimeout(r, 250));
-  await page.evaluate(() => window.__step(180));
+  // Two halves, so the marquee can be compared by how far it *advances* (its
+  // absolute phase is arbitrary in a seamless loop) instead of by position.
+  await page.evaluate(() => window.__step(90));
+  const mqA = await page.evaluate(MQ_SAMPLE);
+  await page.evaluate(() => window.__step(90));
+  const mqB = await page.evaluate(MQ_SAMPLE);
   const out = await page.evaluate(SAMPLE);
+  out.marqueeAdvancePer90Frames = mqA.map((a, i) => {
+    const b = mqB[i];
+    if (!a || !b || a.phase === null || b.phase === null) return null;
+    let d = b.phase - a.phase;
+    if (d > a.half / 2) d -= a.half;
+    if (d < -a.half / 2) d += a.half;
+    return { advance: Math.round(d * 100) / 100, skew: b.skew };
+  });
   await page.close();
   return out;
 }

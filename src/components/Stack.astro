@@ -1,19 +1,24 @@
+---
+import CodePanel from './CodePanel.astro';
+---
+
 <section id="stack" class="pap">
-  <div class="in">
-    <div class="sh rv"><h2>Stack</h2><p data-i18n="d.stack">Cuatro capas y lo que las rodea.</p></div>
+  <CodePanel index={4} />
+  <div class="in relative z-[1] mx-auto max-w-[1400px]">
+    <div class="sh rv flex items-end justify-between gap-8 pb-[1.2rem] mb-[3.2rem] max-mq800:flex-col max-mq800:items-start max-mq800:gap-4"><h2>Stack</h2><p data-i18n="d.stack">Cuatro capas y lo que las rodea.</p></div>
   </div>
   <div class="mqs" aria-hidden="true">
     <div class="mq" id="mq1"></div>
     <div class="mq" id="mq2"></div>
   </div>
-  <div class="in">
-    <div class="cols">
+  <div class="in relative z-[1] mx-auto max-w-[1400px]">
+    <div class="cols grid grid-cols-4 gap-10 max-mq1000:grid-cols-2 max-mq560:grid-cols-1">
       <div class="rv"><h3>Frontend</h3><ul><li>React</li><li>Next.js</li><li>TypeScript</li><li>Tailwind CSS</li><li>Astro</li><li>React Native</li><li>Android · Kotlin</li></ul></div>
       <div class="rv"><h3>Backend</h3><ul><li>Node.js</li><li>Python</li><li>FastAPI</li><li>tRPC</li><li>SQLAlchemy</li><li>Go</li><li>BullMQ</li></ul></div>
       <div class="rv"><h3 data-i18n="pl.db">Datos</h3><ul><li>PostgreSQL</li><li>Supabase self-hosted</li><li>MySQL</li><li>SQLite</li><li>MongoDB</li><li>Redis</li><li>Prisma</li><li>Drizzle ORM</li><li>Typesense</li><li>Firebase</li></ul></div>
       <div class="rv"><h3 data-i18n="pl.op">Infraestructura</h3><ul><li>Docker</li><li>Docker Swarm</li><li>Dokploy</li><li>Traefik</li><li>Nginx</li><li>Linux</li><li>Cloudflare</li><li>Tailscale</li><li>OpenTelemetry</li><li>OpenObserve</li><li>GitHub Actions</li></ul></div>
     </div>
-    <div class="cols">
+    <div class="cols mt-[3.2rem] grid grid-cols-4 gap-10 max-mq1000:grid-cols-2 max-mq560:grid-cols-1">
       <div class="rv"><h3 data-i18n="x1.t">IA</h3><ul><li>Gemini / Vertex AI</li><li>LLM, prompts y scoring</li><li>MCP</li><li>OCR, Document AI</li><li>Vercel AI SDK</li></ul></div>
       <div class="rv"><h3 data-i18n="x1b.t">Automatización</h3><ul><li>n8n</li><li>Playwright</li><li>Google Apps Script</li><li>Google Workspace</li></ul></div>
       <div class="rv"><h3 data-i18n="x2.t">Seguridad y observabilidad</h3><ul><li>RLS, RBAC</li><li>Rate limiting, CSP</li><li>OpenTelemetry</li><li>OpenObserve, Sentry</li></ul></div>

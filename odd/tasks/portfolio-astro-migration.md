@@ -111,3 +111,27 @@ parity over the built HTML). Lesson worth keeping: `prefers-reduced-motion` does
 the harness must freeze animations (`setCurrentTime(0)` + `pauseAnimations()`); otherwise the moving
 packet dot in the diagrams produces ~64 false-positive pixels, which is exactly the false alarm the
 first run produced.
+
+L8 (verification gaps closed, 2026-10-13): the independent verifier rightly flagged that a single
+1440 px reduced-motion capture covers neither the animations, nor other themes and viewports, nor
+event-driven paths. All three gaps were then closed with new evidence rather than argument:
+
+- **Themes and viewports:** extra pixel diffs at 1440 dark, 390 light and 390 dark — **0 differing
+  pixels** in every combination.
+- **Animation:** `tools/animation-check.mjs` replaces `performance.now()`/`requestAnimationFrame`
+  with a stepping queue before any page script runs, advances the same 180 frames in both versions
+  and compares what the effects actually write: kinetic typography weights, revealed elements,
+  active nav link, marquee transforms, scroll progress and the per-section lens masks. All six
+  groups are identical. The second finding of that run was a harness bug, not a page bug: the design
+  sets `scroll-behavior: smooth`, so the page was still mid-scroll when the fake frames ran, which
+  made three groups differ even against the same page; forcing `scroll-behavior: auto` for the check
+  turned the control run into a deterministic pass.
+- **Interactions:** `tools/interaction-check.mjs` drives the command palette (Ctrl+K, filtering,
+  arrow navigation, Escape, opening with `/`, the hidden `sudo` command), the language round trip,
+  the theme toggle, expanding a project card, and — with a fine pointer forced through Blink settings
+  — the cursor ring and the contact magnet: **21 of 21 outcomes identical**.
+
+One pre-existing defect surfaced during that last check, present identically in both versions and
+therefore not a regression: after the palette has been used once, `closePal()` returns focus into
+its hidden input, so the `/` shortcut stays inhibited until the user clicks elsewhere. Reported to
+the user for a separate decision; the migration does not change it.

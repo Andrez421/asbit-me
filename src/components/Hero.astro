@@ -1,11 +1,13 @@
 ---
 import { kinetic } from '../lib/render';
+import CodePanel from './CodePanel.astro';
 ---
 
-<header class="hero band pap" id="home">
+<header class="hero band pap relative flex min-h-[100svh] flex-col justify-between overflow-hidden" id="home">
+  <CodePanel index={0} />
   <p class="hero-top" data-i18n="hero.top">Desarrollador full stack con experiencia en DevOps e infraestructura. Diseño, construyo y despliego sistemas web, automatizaciones e integraciones con IA, de la interfaz al servidor.</p>
   <h1 class="name" id="name" aria-label="Andrés Sebastián Bravo Palacios" data-kin data-w0="560" data-wd0="74" data-w1="900" data-wd1="120" data-sigma="170" data-wave="1"><span class="ln" set:html={kinetic('Andrés Sebastián')}></span><span class="ln" set:html={kinetic('Bravo Palacios')}></span></h1>
-  <div class="hero-foot">
+  <div class="hero-foot relative z-[1] grid grid-cols-3 gap-8 pt-4 max-mq800:grid-cols-1 max-mq800:gap-4">
     <div><b>Popayán, Colombia</b><span class="clock" id="clock"></span> UTC−5</div>
     <div>
       <div class="avail"><i class="dot"></i><span data-i18n="hero.avail">Disponible para proyectos</span></div>

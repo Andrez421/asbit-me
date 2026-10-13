@@ -1,18 +1,32 @@
 /* Tailwind 4 — theme + utilities only.
    Preflight is deliberately NOT imported: the design's own reset lives in
-   effects.css and must keep governing the base styles, so nothing can shift. */
+   effects.css and must keep governing the base styles, so nothing can shift.
+
+   effects.css goes into its own `design` layer, declared BEFORE `utilities`.
+   That ordering is what lets a Tailwind utility override the design's rules
+   (including its `*{margin:0;padding:0}` reset, which would otherwise win: CSS
+   gives unlayered rules priority over every layered one, whatever the
+   specificity). Inside effects.css nothing changes — same layer, same order. */
 @import "tailwindcss/theme.css" layer(theme);
+@import "./effects.css" layer(design);
 @import "tailwindcss/utilities.css" layer(utilities) source(none);
 @source "../components";
 @source "../layouts";
 @source "../pages";
 @source "../scripts";
 @source "../../tools";
-@import "./effects.css";
 
 /* Design tokens from the portfolio, exposed to Tailwind so utility classes can
    reference them (text-pfg, bg-pacc, font-disp, …). */
 @theme {
+  /* Layout breakpoints matching the design's own media queries. Tailwind's `max-*`
+     variants compare strictly (`width < N`), so each token is declared one pixel
+     above the design value to make `max-mq1000:` behave exactly like
+     `@media (max-width:1000px)`. */
+  --breakpoint-mq1000: 1001px;
+  --breakpoint-mq800: 801px;
+  --breakpoint-mq560: 561px;
+
   --color-pbg: #ecedef;
   --color-pfg: #0b0c0e;
   --color-pmid: #62666e;

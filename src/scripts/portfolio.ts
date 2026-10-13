@@ -1,5 +1,5 @@
 import { EN } from '../data/i18n';
-import { SNIPS } from '../data/code';
+import { panelHtml, PANEL_LINES } from '../lib/panels';
 
 /**
  * Runtime behaviour of the portfolio.
@@ -104,38 +104,20 @@ import { SNIPS } from '../data/code';
     }
   });
 
-  /* ───────── código real bajo cada sección ───────── */
-  const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  const KW =
-    /\b(create|alter|table|policy|using|select|export|const|async|await|try|except|def|return|services|jobs|steps|uses|new|if|else|for|in|can|accept)\b/g;
-  const hl = (s: string) => esc(s).replace(KW, '<span class="k">$1</span>');
+  /* ───────── paneles de código: el contenido llega pre-renderizado ───────── */
   const CS = $$('.hero,section').map((sec, i) => ({
     sec,
     i,
     hero: sec.classList.contains('hero'),
-    dim: null as any,
-    hot: null as any,
+    dim: sec.querySelector('.code.dim'),
+    hot: sec.querySelector('.code.hot'),
     lx: 0,
     ly: 0,
     ready: false,
-  }));
-  function codeCols(i: number, h: number) {
-    const need = Math.ceil((h + 800) / 22.5) + 4;
-    let out = '';
-    for (let c = 0; c < 3; c++) {
-      let lines = 0;
-      let html = '';
-      let j = i * 2 + c * 3;
-      while (lines < need) {
-        const s = SNIPS[j % SNIPS.length];
-        html += hl(s) + '\n\n';
-        lines += s.split('\n').length + 1;
-        j++;
-      }
-      out += `<div>${html}</div>`;
-    }
-    return out;
-  }
+  })) as any[];
+  // The old code set this when it created the panels; keeping it makes the rest
+  // state (inline mask position) identical to the previous version.
+  CS.forEach((c: any) => c.hot && lensPos(c, -9999, -9999));
   function lensPos(c: any, x: number, y: number) {
     const h = c.hero ? 230 : 170;
     const v = (x - h).toFixed(0) + 'px ' + (y - h).toFixed(0) + 'px';
@@ -144,20 +126,14 @@ import { SNIPS } from '../data/code';
   }
   function buildCode() {
     CS.forEach((c: any) => {
-      const html = codeCols(c.i, c.sec.offsetHeight);
-      if (!c.dim) {
-        c.dim = document.createElement('div');
-        c.dim.className = 'code dim';
-        c.hot = document.createElement('div');
-        c.hot.className = 'code hot';
-        [c.hot, c.dim].forEach((e) => {
-          e.setAttribute('aria-hidden', 'true');
-          c.sec.prepend(e);
-        });
-        lensPos(c, -9999, -9999);
-      }
-      c.dim.innerHTML = html;
-      c.hot.innerHTML = html;
+      const need = Math.ceil((c.sec.offsetHeight + 800) / 22.5) + 4;
+      // Only when a section is taller than its build-time budget — no designed
+      // viewport is — regenerate that panel, exactly as the previous version
+      // always did. This keeps a short budget from truncating the texture.
+      if (need > (PANEL_LINES[c.i] ?? 0)) c.dim.innerHTML = panelHtml(c.i, need);
+      // The hot layer holds the same content: clone the nodes instead of parsing
+      // the same string a second time, which is what the old code did.
+      c.hot.replaceChildren(...[...c.dim.children].map((n: any) => n.cloneNode(true)));
       if (reduce) lensPos(c, c.sec.offsetWidth * 0.7, Math.min(c.sec.offsetHeight * 0.4, 420));
     });
   }
@@ -559,6 +535,12 @@ import { SNIPS } from '../data/code';
     if (!pal.classList.contains('open')) return;
     pal.classList.remove('open');
     if (palLast && palLast.focus) palLast.focus();
+    // `focus()` on a non-focusable element is a no-op, which used to leave the
+    // focus inside the palette's own hidden input: the keyboard handler then saw
+    // an INPUT as the active element and suppressed the `/` shortcut until the
+    // user clicked somewhere else. Blur whatever remains inside the dialog.
+    const ae: any = document.activeElement;
+    if (ae && pal.contains(ae) && typeof ae.blur === 'function') ae.blur();
   }
   palIn.addEventListener('input', () => {
     palSel = 0;
@@ -601,7 +583,10 @@ import { SNIPS } from '../data/code';
   });
   $('#palBtn').addEventListener('click', openPal);
   addEventListener('keydown', (e: any) => {
-    const typing = /INPUT|TEXTAREA/.test(document.activeElement.tagName) || document.activeElement.isContentEditable;
+    const ae: any = document.activeElement;
+    // Focus inside the palette only counts as typing while the palette is open.
+    const typing =
+      (/INPUT|TEXTAREA/.test(ae.tagName) && !pal.contains(ae)) || ae.isContentEditable;
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
       e.preventDefault();
       pal.classList.contains('open') ? closePal() : openPal();

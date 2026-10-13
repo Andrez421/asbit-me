@@ -1,0 +1,13 @@
+---
+import { panelHtml, PANEL_LINES } from '../lib/panels';
+
+interface Props {
+  /** Section index in the panel order: 0 hero, 1 about, 2 experience, 3 work, 4 stack, 5 contact. */
+  index: number;
+}
+const { index } = Astro.props;
+const html = panelHtml(index, PANEL_LINES[index] ?? PANEL_LINES[0]);
+---
+
+<div class="code dim" aria-hidden="true" data-panel={index} set:html={html}></div>
+<div class="code hot" aria-hidden="true"></div>

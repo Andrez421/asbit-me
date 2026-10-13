@@ -65,6 +65,17 @@ async function scenario(url) {
   await page.keyboard.press('Escape');
   out.paletteClosed = !(await has('#pal'));
 
+  /* the `/` shortcut right after closing the palette, without touching focus:
+     the old version left the focus inside the hidden input and suppressed it,
+     the fixed version blurs it — an intentional improvement, reported as FIX. */
+  await page.keyboard.down('Control');
+  await page.keyboard.press('KeyK');
+  await page.keyboard.up('Control');
+  await page.keyboard.press('Escape');
+  await page.keyboard.press('/');
+  out.paletteAfterEscapeNoBlur = await has('#pal');
+  await page.keyboard.press('Escape');
+
   /* secret command through the palette */
   // A real user presses / with the focus on the page, not inside a text field.
   await page.evaluate(() => document.activeElement.blur());
@@ -131,11 +142,14 @@ await browser.close();
 
 let diffs = 0;
 const SKIP = ['ring', 'ringOffPage', 'magnetTransform'];
+/** Differences that are the point of the change rather than a regression. */
+const EXPECTED = { paletteAfterEscapeNoBlur: true };
 for (const key of Object.keys(A)) {
   const same = JSON.stringify(A[key]) === JSON.stringify(B[key]);
   const skipped = !A.mediaFine && SKIP.includes(key);
-  if (!same && !skipped) diffs++;
-  const tag = skipped ? '  SKIP' : same ? '  =  ' : '  DIF';
+  const expected = !same && EXPECTED[key];
+  if (!same && !skipped && !expected) diffs++;
+  const tag = skipped ? '  SKIP' : expected ? '  FIX ' : same ? '  =  ' : '  DIF';
   console.log(`${tag} ${key}`);
   if (!same) console.log(`        old: ${JSON.stringify(A[key])}\n        new: ${JSON.stringify(B[key])}`);
 }

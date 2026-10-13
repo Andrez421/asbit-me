@@ -13,14 +13,16 @@ function row(r: Entry, pre: string, i: number): string {
 }
 const studies = STUDIES.map((r, i) => row(r, 's', i)).join('');
 const certs = CERTS.map((r, i) => row(r, 'c', i)).join('');
+import CodePanel from './CodePanel.astro';
 ---
 
 <section id="experience" class="pap">
-  <div class="in">
-    <div class="sh rv"><h2 data-i18n="h.exp">Trayectoria</h2><p data-i18n="d.exp">Más de diez años en TI: del soporte técnico a las plataformas en producción.</p></div>
-    <div class="rows">
-      <article class="row">
-        <div class="when"><i class="dot"></i><span data-i18n="e1.d">2024 – Actualidad</span></div>
+  <CodePanel index={2} />
+  <div class="in relative z-[1] mx-auto max-w-[1400px]">
+    <div class="sh rv flex items-end justify-between gap-8 pb-[1.2rem] mb-[3.2rem] max-mq800:flex-col max-mq800:items-start max-mq800:gap-4"><h2 data-i18n="h.exp">Trayectoria</h2><p data-i18n="d.exp">Más de diez años en TI: del soporte técnico a las plataformas en producción.</p></div>
+    <div class="rows grid">
+      <article class="row grid grid-cols-[minmax(9rem,24%)_1fr] gap-10 py-[2.4rem] max-mq1000:grid-cols-1 max-mq1000:gap-[.8rem]">
+        <div class="when sticky top-[5.5rem] self-start flex items-center gap-[.6rem] max-mq1000:static"><i class="dot"></i><span data-i18n="e1.d">2024 – Actualidad</span></div>
         <div>
           <h3 data-i18n="e1.role">Analista de Sistemas y Desarrollador Full Stack</h3>
           <p class="org">SENA, Regional Cauca, Centro de Comercio y Servicios · Popayán</p>
@@ -35,8 +37,8 @@ const certs = CERTS.map((r, i) => row(r, 'c', i)).join('');
           </ul>
         </div>
       </article>
-      <article class="row">
-        <div class="when">2024</div>
+      <article class="row grid grid-cols-[minmax(9rem,24%)_1fr] gap-10 py-[2.4rem] max-mq1000:grid-cols-1 max-mq1000:gap-[.8rem]">
+        <div class="when sticky top-[5.5rem] self-start flex items-center gap-[.6rem] max-mq1000:static">2024</div>
         <div>
           <h3 data-i18n="e2.role">Técnico de servicios de TI en sitio</h3>
           <p class="org" data-i18n="e2.org">Global Talent GT S.A.S. — consultoría y servicios de TI · Bogotá</p>
@@ -46,8 +48,8 @@ const certs = CERTS.map((r, i) => row(r, 'c', i)).join('');
           </ul>
         </div>
       </article>
-      <article class="row">
-        <div class="when">2022 – 2023</div>
+      <article class="row grid grid-cols-[minmax(9rem,24%)_1fr] gap-10 py-[2.4rem] max-mq1000:grid-cols-1 max-mq1000:gap-[.8rem]">
+        <div class="when sticky top-[5.5rem] self-start flex items-center gap-[.6rem] max-mq1000:static">2022 – 2023</div>
         <div>
           <h3 data-i18n="e3.role">Agente de mesa de servicios N2</h3>
           <p class="org">Pear Solutions · Proyecto SENA–Telefónica</p>
@@ -57,8 +59,8 @@ const certs = CERTS.map((r, i) => row(r, 'c', i)).join('');
           </ul>
         </div>
       </article>
-      <article class="row">
-        <div class="when">2018 – 2020</div>
+      <article class="row grid grid-cols-[minmax(9rem,24%)_1fr] gap-10 py-[2.4rem] max-mq1000:grid-cols-1 max-mq1000:gap-[.8rem]">
+        <div class="when sticky top-[5.5rem] self-start flex items-center gap-[.6rem] max-mq1000:static">2018 – 2020</div>
         <div>
           <h3 data-i18n="e4.role">Xtreme Cyber — soporte técnico y soluciones a medida</h3>
           <p class="org" data-i18n="e4.org">Propietario y administrador · Popayán</p>
@@ -69,8 +71,8 @@ const certs = CERTS.map((r, i) => row(r, 'c', i)).join('');
           </ul>
         </div>
       </article>
-      <article class="row">
-        <div class="when">2016 – 2018</div>
+      <article class="row grid grid-cols-[minmax(9rem,24%)_1fr] gap-10 py-[2.4rem] max-mq1000:grid-cols-1 max-mq1000:gap-[.8rem]">
+        <div class="when sticky top-[5.5rem] self-start flex items-center gap-[.6rem] max-mq1000:static">2016 – 2018</div>
         <div>
           <h3 data-i18n="e5.role">Técnico en sistemas</h3>
           <p class="org">R&amp;S Soluciones · Cartagena</p>
@@ -80,8 +82,8 @@ const certs = CERTS.map((r, i) => row(r, 'c', i)).join('');
           </ul>
         </div>
       </article>
-      <article class="row">
-        <div class="when">2011 – 2016</div>
+      <article class="row grid grid-cols-[minmax(9rem,24%)_1fr] gap-10 py-[2.4rem] max-mq1000:grid-cols-1 max-mq1000:gap-[.8rem]">
+        <div class="when sticky top-[5.5rem] self-start flex items-center gap-[.6rem] max-mq1000:static">2011 – 2016</div>
         <div>
           <h3 data-i18n="e6.role">Soporte técnico y sistemas</h3>
           <p class="org" data-i18n="e6.org">Varias empresas · Nariño, Cauca y Bogotá</p>
@@ -92,7 +94,7 @@ const certs = CERTS.map((r, i) => row(r, 'c', i)).join('');
         </div>
       </article>
     </div>
-    <div class="edu">
+    <div class="edu grid grid-cols-2 gap-12 mt-[4.5rem] max-mq1000:grid-cols-1">
       <div class="rv"><h3 data-i18n="edu.t">Estudios</h3><div id="studies" set:html={studies}></div></div>
       <div class="rv"><h3 data-i18n="cert.t">Certificaciones</h3><div id="certs" set:html={certs}></div></div>
     </div>

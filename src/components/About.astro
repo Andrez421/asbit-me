@@ -1,7 +1,12 @@
+---
+import CodePanel from './CodePanel.astro';
+---
+
 <section id="about" class="inv">
-  <div class="in">
+  <CodePanel index={1} />
+  <div class="in relative z-[1] mx-auto max-w-[1400px]">
     <p class="stmt" id="stmt" data-i18n="s.stmt">Construyo plataformas que usan personas reales todos los días. Me ocupo de todo el recorrido: la interfaz, la API, la base de datos, el despliegue y lo que pasa cuando algo falla. Vengo de más de diez años en soporte TI, y por eso diseño pensando en quien usa el sistema y en quien lo mantiene a las tres de la mañana.</p>
-    <div class="facts">
+    <div class="facts grid grid-cols-4 gap-8 mt-20 pt-[1.2rem] max-mq1000:grid-cols-2 max-mq560:grid-cols-1">
       <div><span data-i18n="f.role">Rol</span><b data-i18n="f.role.v">Analista de Sistemas y Desarrollador Full Stack</b></div>
       <div><span data-i18n="f.edu">Estudios</span><b data-i18n="f.edu.v">Ingeniería de Sistemas, UNAD (en curso)</b></div>
       <div><span data-i18n="f.loc">Ubicación</span><b>Popayán, Colombia</b></div>
