@@ -14,7 +14,6 @@
 @source "../layouts";
 @source "../pages";
 @source "../scripts";
-@source "../../tools";
 
 /* Design tokens from the portfolio, exposed to Tailwind so utility classes can
    reference them (text-pfg, bg-pacc, font-disp, …). */

@@ -35,10 +35,10 @@ section taller than the budget, so a short budget can never show a truncated tex
 
 | ID | Specs | Route | Commit |
 | --- | --- | --- | --- |
-| B1 | S1, S3, S2 | Inline (parent) | layout of the 11 selectors to Tailwind utilities; delete only those declarations |
-| B2 | S1, S4, S2 | Inline (parent) | palette `/` fix + interaction gate asserts it |
-| B3 | S1, S5, S6 | Inline (parent) | panels rendered at build with a measured budget; runtime clones and tops up |
-| B4 | S2 | Inline (parent), automated | all three gates at 1440/1000/800/560 × light/dark, live check, before/after measurement |
+| B1 | S1, S3, S2 | Inline (parent) | done: layout to utilities, effect layer intact, 0 px in 7 scenarios |
+| B2 | S1, S4, S2 | Inline (parent) | done: `/` works after closing the palette (gate marks it FIX) |
+| B3 | S1, S5, S6 | Inline (parent) | done: panels pre-rendered, runtime clones; +4.2 KB gzip for ~137 ms less blocking |
+| B4 | S2 | Inline (parent), automated | done: 0 px in 7 scenarios, animated state identical, 21/21 interactions |
 
 ## Log
 
@@ -55,3 +55,43 @@ L3 (Tailwind breakpoints): the design uses `max-width:1000px`, `800px`, `560px` 
 Tailwind's `max-*` variants compare strictly (`width < N`), so the tokens are declared one pixel above
 the design's values (`--breakpoint-mq1000: 1001px`, `mq800: 801px`, `mq560: 561px`) which makes
 `max-mq1000:` exactly `@media (max-width:1000px)`.
+
+L4 (B1, two cascade traps worth remembering): layout of 14 selectors moved to utilities. First trap:
+every spacing utility was inert because the design's own `*{margin:0;padding:0}` reset was *unlayered*,
+and CSS gives unlayered rules priority over **any** layered one whatever the specificity — the page
+lost exactly the deleted declarations (99 px in about, 603 in experience, 118 in work, 121 in stack,
+16 in contact). Fix: `effects.css` now goes into a `design` layer declared *before* `utilities`, so
+utilities win where they are meant to while the design keeps governing itself. Second trap:
+`.menu-links` keeps `display:none` at ≤800 px in CSS, and the `flex` utility (later layer) won over
+it, leaving the desktop menu visible on mobile (683–3,819 differing pixels below 800 px) — that one
+declaration stays CSS-only and the reason is written in the file. After both fixes: **0 differing
+pixels** at 1440, 1440 dark, 1000, 800, 560, 390 and 390 dark.
+
+L5 (B2): `closePal()` now blurs whatever focus is left inside the dialog and the keyboard handler
+ignores focus that sits inside a *closed* palette. The interaction gate reports
+`FIX paletteAfterEscapeNoBlur`: the old version kept the shortcut suppressed, the new one opens the
+palette — an intentional difference the gate is told to expect rather than treat as a regression.
+
+L6 (B3): panels are rendered at build time with a per-section line budget from the measured maxima
+(101/98/371/171/194/84 lines against needs of 88/85/323/149/169/73 across 320–1920 px). The runtime
+clones the dim layer's nodes into the hot layer — one HTML parse instead of two — and keeps
+`panelHtml` as a fallback for sections taller than the budget, so a short budget can never truncate
+the texture. `.nojs .code{display:none}` preserves the no-JS rendering, and the hot layer starts with
+its mask off-screen in CSS, which is the state the old code set from JS. The animation gate now
+compares the marquee by *rate* (advance per 90 frames) and content width, because the old version
+seeded its offset from a fallback-font measurement (650 px) and never re-seeded it with the real font
+(3,174 px) — a latent bug the new version does not have, and the only reason the absolute phases
+differ.
+
+L7 (B4, measured): same harness, local against local — DOMInteractive 772→145 ms, DOMContentLoaded
+773→381 ms, load 857→382 ms, FCP 688→204 ms, long-task blocking 493→356 ms (−28%). Page bytes:
+92.9 KB→204.3 KB raw (HTML 48→159 KB, because the texture now ships pre-rendered) and gzip
+25.2→29.5 KB (**+4.2 KB, +17%**), in exchange for removing 1,928 runtime DOM nodes and the double
+panel construction. DOM node count went 2,921→3,807: the extra nodes are parsed from the HTML rather
+than built by script. Reported as measured, per S5.
+
+L8 (build parity): the local and container CSS differed by 28 bytes — the single `.absolute` rule.
+The cause was a stale local Tailwind/Vite cache, not the configuration: after
+`rm -rf .astro node_modules/.vite dist`, a clean local build is byte-identical to the container
+(CSS 20,360 B, HTML 158,909 B). `.absolute` itself is a false-positive candidate Tailwind extracts
+from the string `position:absolute` inside effects.css — harmless, a few bytes, noted for the record.
