@@ -202,3 +202,21 @@ the dashboard language set to English, in case a stale localized bundle is at fa
 the rules and the `www` record through the Cloudflare API with a scoped token, which skips the
 dashboard entirely; (3) fall back to a Page Rule forwarding URL on `asbit.dev/*`
 (`https://asbit.me/$1`, 301) or account-level Bulk Redirects.
+
+L17 (T6 token gap, 2026-10-13): the minted token authenticates but carries only zone read.
+Probed against the live API: `GET /zones` → 200, `GET /zones/{id}` → 200,
+`GET /zones/{id}/rulesets` (metadata list) → 200, while `GET /zones/{id}/dns_records` → 403
+`Authentication error`, `GET /zones/{id}/rulesets/{id}` → 403 `request is not authorized`, and
+`GET /zones/{id}/settings/email_obfuscation` → 403 `Authentication error`. Note that
+`GET /user/tokens/verify` answers 401 `Invalid API Token` for this `cfat_` token format, so a
+token must be probed with real endpoints rather than trusted on that call. Writes need
+`Zone → DNS: Edit`, `Zone → Config → Rules: Edit` and `Zone → Zone Settings: Edit`, scoped to both
+`asbit.me` (`fde5bf5b8937295e9a097108924cdcda`) and `asbit.dev`
+(`813763f2bb2cc0701cbaf2934b131325`).
+
+L18 (consequence, 2026-10-13): neither zone holds a single redirect rule today — the
+`http_request_dynamic_redirect` rulesets exist but are empty (`asbit.dev`
+`bc1885148edf40efa201dc54ca28dc39` v4, `asbit.me` `9b1ff0c9444749509cc59ea2c459f317` v3). The
+dashboard never persisted anything, not even the `www` rule, which matches the
+`action is required for action parameters` failure. Rules must be added to those existing
+rulesets rather than creating new ones.
