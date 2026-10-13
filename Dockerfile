@@ -1,7 +1,8 @@
 # Stage 1 — build the static site with Astro.
+# Node 26 images no longer bundle corepack, so pnpm is installed explicitly.
 FROM node:26-alpine AS build
 WORKDIR /app
-RUN corepack enable
+RUN npm install -g pnpm@11.9.0
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 COPY . .
