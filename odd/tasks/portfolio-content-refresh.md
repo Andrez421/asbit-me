@@ -68,6 +68,35 @@ S11 — Scope note: the CV's per-project sections are its traceable-evidence lay
 tiene fuente trazable`), so its raw figures stay and the metric framing is added as a human-facing
 summary section instead. Flagged to the user rather than assumed.
 
+S12 — Third round sources, verbatim instruction: "revisa en descargas Hoja de vida 2026.pdf y
+Páginas desdeHOJA DE VIDA - ANDRES SEBASTIAN BRAVO PALACIOS.pdf para complementar informacion
+faltante". The 2026 file is the official Colombian public-sector single résumé form and contains
+the exact employment history (employer, role, dependency, start and end date) plus two extra
+courses; the second file adds the Xtreme Cyber entrepreneurship, IP Technologies, the
+SENA–Telefónica project context, secondary-school distinctions and nine further courses.
+
+S13 — Tone rule, verbatim: "adecua lo necesario para que suene mas tecnico y profesional, mas
+moderno y adecuado para el portafolio, por ejemplo cyber extreme coloco como emprendimiento,
+soporte a medida para pymes, y las otras experiencias redactalas de mejor forma". Rewrite the
+earlier roles as technical, modern achievements instead of task lists; the entrepreneurship is
+framed as tailored support for small businesses.
+
+S14 — Repo message rule, verbatim: "sobre los repos la mayoria son proivados porque son
+institucionales y debido a un acuerdo de confidencialiada debo dejarlos asi, ajusta un poco el
+mensaje sobre os repos y visibilidad haciendo una mencion sutil sobre el esto". The public page
+and the CV must mention the confidentiality constraint once, subtly, without excusing the
+portfolio.
+
+S15 — References, verbatim: "descarta linkedin, referencias laborales: Edwin Brito Lider TIC
+regional cauca, Omar Trejos Dinamizador tic regional cauca, añadelos de forma sutil". LinkedIn is
+dropped everywhere; the two references are recorded in the CV, not on the public page, because
+publishing third-party names and roles without their consent is not appropriate.
+
+S16 — Known discrepancies found and **not** silently resolved: the older worksheet names
+`Universidad del Cauca` (semester 6) where the current résumé and the portfolio say `UNAD`, the
+technician title is dated 12/2009 in the official form versus 2010 in the other two sources, and
+the official form lists one employer as `Cargando...` (a form artifact). Reported to the user.
+
 ## Tasks
 
 | ID | Specs | Route | Commit |
@@ -80,6 +109,10 @@ summary section instead. Flagged to the user rather than assumed.
 | T6 | S10, S8 | Inline (parent) | internal CV: fill sections 1, 9 and 12 from the PDF |
 | T7 | S9, S10 | Inline (parent) | internal CV: add the human-facing measured-impact summary |
 | T8 | S9, S7 | Inline (parent) + live check | verify: parity, renders, deployed bytes |
+| T9 | S12, S13, S7 | Inline (parent) | portfolio: full career timeline (7 entries) rewritten technically + entrepreneurship |
+| T10 | S12, S14, S15, S7 | Inline (parent) | portfolio + CV: confidentiality note, references, drop LinkedIn, five new courses |
+| T11 | S12, S15 | Inline (parent) | internal CV: complete employment history with exact dates per the official form |
+| T12 | S7, S13 | Inline (parent) + live check | verify: parity, ES/EN render, deployed bytes |
 
 ## Log
 
@@ -167,3 +200,21 @@ and the section 12 checklist were completed from the PDF, and a new human-facing
 the measured impact in percentages and time saved. Its per-project evidence tables were left
 intact on purpose (S11) because that document's stated contract is that every figure is traceable;
 the user was told and can ask for the same softening there.
+
+L13 (third round, 2026-10-13): the official form supplies the exact history used to rebuild the
+timeline — SENA analyst from 27/01/2025, SENA on-site support 15/04/2024–31/12/2024, Global Talent
+GT 17/01/2024–31/03/2024, Pear Solutions 22/10/2022–31/12/2023, R&S Soluciones
+07/07/2016–12/02/2018 — plus a 2015–2016 role and older ones (INGENIERÍA DE SUMINISTROS RYR
+2011–2012, Yobana Sport 2014–2015, IP Technologies 12 months). The published page keeps seven
+entries: the two SENA stages now read as a progression (support 2024 → analyst 2025–present),
+Global Talent fills 2024, Pear Solutions carries the SENA–Telefónica project, Xtreme Cyber enters
+as the entrepreneurship with tailored support for small businesses, R&S Soluciones is rewritten,
+and the earliest roles are consolidated into one 2011–2016 line because the official form lists
+one employer as `Cargando...` (an artifact) and IP Technologies was logistics-heavy.
+
+L14 (T10): five courses added from the two PDFs (Cisco Networking 2024, computer installation and
+repair 2022, TensorFlow for AI/ML/DL 2021, Innovation Lab at Universidad Nacional 2021, Machine
+Learning with R 2020), bringing the published list to fifteen. The confidentiality constraint is
+mentioned once, subtly, in the GitHub line and in the CV's visibility section. LinkedIn is removed
+from the CV, and the two references (Edwin Brito, Líder TIC Regional Cauca; Omar Trejos,
+Dinamizador TIC Regional Cauca) are recorded there rather than on the public page.
