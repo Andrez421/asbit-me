@@ -155,7 +155,7 @@ section{position:relative;overflow:clip;padding:7.5rem var(--pad)}
 .mq span{font:800 clamp(4rem,13.5vw,12.5rem)/1.05 var(--disp);font-variation-settings:'wdth' 62,'wght' 800;letter-spacing:-.02em;color:transparent;-webkit-text-stroke:1.4px var(--fg);padding-right:.5em;transition:color .35s}
 .mq span:hover{color:var(--fg)}
 .cols{display:grid;grid-template-columns:repeat(4,1fr);gap:2.5rem}
-.cols+.cols{margin-top:3.2rem;grid-template-columns:repeat(3,1fr)}
+.cols+.cols{margin-top:3.2rem;grid-template-columns:repeat(4,1fr)}
 .cols h3{font:600 1.35rem var(--disp);font-variation-settings:'wdth' 85;padding-bottom:.7rem;border-bottom:1px solid var(--line);margin-bottom:.8rem}
 .cols li{padding:.18rem 0;transition:transform .3s cubic-bezier(.2,.8,.2,1),color .3s;cursor:default}
 .cols li:hover{transform:translateX(.5rem);color:var(--acc)}
@@ -263,7 +263,7 @@ section .code.hot{color:var(--acc)}
   <div class="hero-foot">
     <div><b>Popayán, Colombia</b><span class="clock" id="clock"></span> UTC−5</div>
     <div><div class="avail"><i class="dot"></i><span data-i18n="hero.avail">Disponible para proyectos</span></div><span class="hint" data-i18n="hero.hint">Mueve el cursor para ver lo que hay debajo.</span></div>
-    <div data-i18n="hero.now">Analista de Sistemas. Software, infraestructura y automatización, de punta a punta.</div>
+    <div data-i18n="hero.now">Analista de Sistemas y Desarrollador Full Stack. Software, infraestructura, IA y automatización, de punta a punta.</div>
   </div>
 </header>
 
@@ -271,7 +271,7 @@ section .code.hot{color:var(--acc)}
   <div class="in">
     <p class="stmt" id="stmt" data-i18n="s.stmt">Construyo plataformas que usan personas reales todos los días. Me ocupo de todo el recorrido: la interfaz, la API, la base de datos, el despliegue y lo que pasa cuando algo falla. Vengo de más de diez años en soporte TI, y por eso diseño pensando en quien usa el sistema y en quien lo mantiene a las tres de la mañana.</p>
     <div class="facts">
-      <div><span data-i18n="f.role">Rol</span><b data-i18n="f.role.v">Analista de Sistemas</b></div>
+      <div><span data-i18n="f.role">Rol</span><b data-i18n="f.role.v">Analista de Sistemas y Desarrollador Full Stack</b></div>
       <div><span data-i18n="f.edu">Estudios</span><b data-i18n="f.edu.v">Ingeniería de Sistemas, UNAD (en curso)</b></div>
       <div><span data-i18n="f.loc">Ubicación</span><b>Popayán, Colombia</b></div>
       <div><span data-i18n="f.lang">Idiomas</span><b data-i18n="f.lang.v">Español nativo, inglés B1</b></div>
@@ -281,18 +281,21 @@ section .code.hot{color:var(--acc)}
 
 <section id="experience" class="pap">
   <div class="in">
-    <div class="sh rv"><h2 data-i18n="h.exp">Trayectoria</h2><p data-i18n="d.exp">Del soporte técnico al desarrollo de plataformas.</p></div>
+    <div class="sh rv"><h2 data-i18n="h.exp">Trayectoria</h2><p data-i18n="d.exp">Del soporte técnico a las plataformas en producción.</p></div>
     <div class="rows">
       <article class="row">
         <div class="when"><i class="dot"></i><span data-i18n="e1.d">2024 – Actualidad</span></div>
         <div>
-          <h3 data-i18n="e1.role">Analista de Sistemas</h3>
-          <p class="org">SENA, Regional Cauca, Popayán</p>
+          <h3 data-i18n="e1.role">Analista de Sistemas y Desarrollador Full Stack</h3>
+          <p class="org">SENA, Regional Cauca, Centro de Comercio y Servicios · Popayán</p>
           <ul>
-            <li data-i18n="e1.b1">Plataformas web en producción para matrícula, certificación y seguimiento de aprendices.</li>
-            <li data-i18n="e1.b2">Entornos de desarrollo, staging y producción con Docker, Dokploy, Traefik, Cloudflare y Tailscale.</li>
-            <li data-i18n="e1.b3">CI/CD, pruebas automatizadas, monitoreo y auditorías de seguridad.</li>
-            <li data-i18n="e1.b4">Automatización con Python y Playwright, y acompañamiento técnico a pasantes.</li>
+            <li data-i18n="e1.b1">Análisis, diseño y construcción de plataformas en producción para matrícula, certificación, etapa productiva, inventario de activos y reportería: alrededor de 12.000 aprendices y 62 programas.</li>
+            <li data-i18n="e1.b2">Validación documental con IA (Gemini y Vertex AI) sobre colas de trabajo con reintentos, OCR y puntaje de confianza por documento.</li>
+            <li data-i18n="e1.b3">Automatización de procesos con n8n y robots de navegador en Python y Playwright: de 150 a 200 casos diarios de validación de matrícula y 2.870 documentos cargados a expedientes con un 100 % de efectividad.</li>
+            <li data-i18n="e1.b4">Infraestructura propia con Docker Swarm, Dokploy y Traefik sobre cinco servidores, Supabase self-hosted, Cloudflare y Tailscale, más observabilidad con OpenTelemetry y OpenObserve.</li>
+            <li data-i18n="e1.b5">Migración completa de plataforma: 12.032 perfiles y 20.134 objetos de almacenamiento trasladados con copia de seguridad verificada por SHA-256.</li>
+            <li data-i18n="e1.b6">Seguridad y datos personales desde el diseño: control de acceso por roles y atributos, RLS en todas las tablas, límites de peticiones, CSP y lineamientos de la Ley 1581.</li>
+            <li data-i18n="e1.b7">Calidad y acompañamiento: cerca de 4.000 pruebas automatizadas, verificación de base de datos como requisito obligatorio de integración, 15 ADRs y mentoría a pasantes con rúbrica de revisión.</li>
           </ul>
         </div>
       </article>
@@ -338,13 +341,14 @@ section .code.hot{color:var(--acc)}
   </div>
   <div class="in">
     <div class="cols">
-      <div class="rv"><h3>Frontend</h3><ul><li>React</li><li>Next.js</li><li>TypeScript</li><li>Tailwind CSS</li><li>React Native</li></ul></div>
-      <div class="rv"><h3>Backend</h3><ul><li>Node.js</li><li>Python</li><li>FastAPI</li><li>tRPC</li><li>BullMQ</li></ul></div>
-      <div class="rv"><h3 data-i18n="pl.db">Datos</h3><ul><li>PostgreSQL</li><li>Supabase</li><li>MySQL</li><li>SQLite</li><li>MongoDB</li><li>Redis</li><li>Prisma</li><li>Drizzle ORM</li><li>Firebase</li></ul></div>
-      <div class="rv"><h3 data-i18n="pl.op">Infraestructura</h3><ul><li>Docker</li><li>Docker Swarm</li><li>Dokploy</li><li>Traefik</li><li>Nginx</li><li>Linux</li><li>Cloudflare</li><li>Tailscale</li><li>GitHub Actions</li></ul></div>
+      <div class="rv"><h3>Frontend</h3><ul><li>React</li><li>Next.js</li><li>TypeScript</li><li>Tailwind CSS</li><li>Astro</li><li>React Native</li><li>Android · Kotlin</li></ul></div>
+      <div class="rv"><h3>Backend</h3><ul><li>Node.js</li><li>Python</li><li>FastAPI</li><li>tRPC</li><li>SQLAlchemy</li><li>Go</li><li>BullMQ</li></ul></div>
+      <div class="rv"><h3 data-i18n="pl.db">Datos</h3><ul><li>PostgreSQL</li><li>Supabase self-hosted</li><li>MySQL</li><li>SQLite</li><li>MongoDB</li><li>Redis</li><li>Prisma</li><li>Drizzle ORM</li><li>Typesense</li><li>Firebase</li></ul></div>
+      <div class="rv"><h3 data-i18n="pl.op">Infraestructura</h3><ul><li>Docker</li><li>Docker Swarm</li><li>Dokploy</li><li>Traefik</li><li>Nginx</li><li>Linux</li><li>Cloudflare</li><li>Tailscale</li><li>OpenTelemetry</li><li>OpenObserve</li><li>GitHub Actions</li></ul></div>
     </div>
     <div class="cols">
-      <div class="rv"><h3 data-i18n="x1.t">IA y automatización</h3><ul><li>Gemini / Vertex AI</li><li>OCR</li><li>Playwright</li></ul></div>
+      <div class="rv"><h3 data-i18n="x1.t">IA</h3><ul><li>Gemini / Vertex AI</li><li>LLM, prompts y scoring</li><li>MCP</li><li>OCR, Document AI</li><li>Vercel AI SDK</li></ul></div>
+      <div class="rv"><h3 data-i18n="x1b.t">Automatización</h3><ul><li>n8n</li><li>Playwright</li><li>Google Apps Script</li><li>Google Workspace</li></ul></div>
       <div class="rv"><h3 data-i18n="x2.t">Seguridad y observabilidad</h3><ul><li>RLS, RBAC</li><li>Rate limiting, CSP</li><li>OpenTelemetry</li><li>OpenObserve, Sentry</li></ul></div>
       <div class="rv"><h3 data-i18n="x3.t">Calidad y procesos</h3><ul><li>Git, GitHub</li><li>Vitest, TDD</li><li>ADRs</li><li>ITIL v4</li><li>Azure, AWS</li></ul></div>
     </div>
@@ -388,22 +392,25 @@ const EN={
 "nav.about":"About","nav.exp":"Experience","nav.work":"Work","nav.contact":"Contact",
 "hero.top":"Full stack developer with DevOps and infrastructure experience. I design, build and deploy web systems, automations and AI integrations, from the interface to the server.",
 "hero.avail":"Open to projects","hero.hint":"Move the cursor to see what's underneath.",
-"hero.now":"Systems Analyst. Software, infrastructure and automation, end to end.",
+"hero.now":"Systems Analyst and Full Stack Developer. Software, infrastructure, AI and automation, end to end.",
 "s.stmt":"I build platforms that real people use every day. I own the whole path: the interface, the API, the database, the deployment and what happens when something fails. I come from more than ten years in IT support, so I design for the person using the system and for the person keeping it alive at three in the morning.",
-"f.role":"Role","f.role.v":"Systems Analyst","f.edu":"Studies","f.edu.v":"Systems Engineering, UNAD (in progress)","f.loc":"Location","f.lang":"Languages","f.lang.v":"Spanish native, English B1",
-"h.exp":"Experience","d.exp":"From technical support to building platforms.",
-"e1.d":"2024 – Present","e1.role":"Systems Analyst",
-"e1.b1":"Production web platforms for enrollment, certification and follow-up of apprentices.",
-"e1.b2":"Development, staging and production environments with Docker, Dokploy, Traefik, Cloudflare and Tailscale.",
-"e1.b3":"CI/CD, automated testing, monitoring and security audits.",
-"e1.b4":"Automation with Python and Playwright, and technical mentoring for interns.",
+"f.role":"Role","f.role.v":"Systems Analyst and Full Stack Developer","f.edu":"Studies","f.edu.v":"Systems Engineering, UNAD (in progress)","f.loc":"Location","f.lang":"Languages","f.lang.v":"Spanish native, English B1",
+"h.exp":"Experience","d.exp":"From technical support to production platforms.",
+"e1.d":"2024 – Present","e1.role":"Systems Analyst and Full Stack Developer",
+"e1.b1":"Analysis, design and delivery of production platforms for enrollment, certification, productive stage, asset inventory and reporting: around 12,000 apprentices and 62 programs.",
+"e1.b2":"Document validation with AI (Gemini and Vertex AI) on job queues with retries, OCR and a confidence score per document.",
+"e1.b3":"Process automation with n8n and browser robots in Python and Playwright: 150 to 200 enrollment validation cases per day and 2,870 documents uploaded into case files at 100% success.",
+"e1.b4":"Self-managed infrastructure with Docker Swarm, Dokploy and Traefik across five servers, self-hosted Supabase, Cloudflare and Tailscale, plus observability with OpenTelemetry and OpenObserve.",
+"e1.b5":"Full platform migration: 12,032 profiles and 20,134 storage objects moved with a SHA-256 verified backup.",
+"e1.b6":"Security and personal data by design: role- and attribute-based access control, RLS on every table, rate limiting, CSP and Colombian data-protection rules (Ley 1581).",
+"e1.b7":"Quality and mentoring: nearly 4,000 automated tests, database verification as a mandatory integration check, 15 ADRs and intern mentoring with a review rubric.",
 "e2.role":"Service Desk Agent L2","e2.b1":"Incident and request management with BMC Helix following ITIL practices, with user support.",
 "e3.role":"Systems Technician","e3.b1":"Hardware and software diagnosis and maintenance, with on-site and remote support.",
 "edu.t":"Education","cert.t":"Certifications",
 "h.work":"Work","d.work":"What I've put into production and a few personal projects. Open each one to see how it's put together.",
 "more.t":"More on GitHub","more.d":"SIRS, SIREA, Chart Studio and other repositories.",
 "d.stack":"Four layers and what surrounds them.","pl.db":"Data","pl.op":"Infrastructure",
-"x1.t":"AI and automation","x2.t":"Security and observability","x3.t":"Quality and process",
+"x1.t":"AI","x1b.t":"Automation","x2.t":"Security and observability","x3.t":"Quality and process",
 "c.lead":"Is there a system to build or get running?",
 "c.p":"I reply by email. I'm also open to collaborations and freelance projects.","c.copy":"Copy email"
 };
@@ -411,28 +418,43 @@ const EN={
 /* ───────── datos ───────── */
 const PROJECTS=[
 {id:'pgaa',name:'PGAA',k:'pro',stk:'Next.js, TypeScript, Supabase, PostgreSQL, Redis, Docker',
- d:{es:'Plataforma para gestionar matrículas, validar documentos con IA, certificar y generar reportes. Control de acceso por roles y atributos, y un esquema pensado para crecer de uno a varios centros de formación.',en:'Platform to manage enrollments, validate documents with AI, issue certifications and generate reports. Role- and attribute-based access control, and a schema built to grow from one training center to many.'},
+ d:{es:'Plataforma para gestionar matrículas, validar documentos con IA, certificar y generar reportes de unos 12.000 aprendices y 62 programas. Control de acceso por roles y atributos sobre 25 tablas con RLS, y un esquema pensado para crecer de uno a varios centros de formación.',en:'Platform to manage enrollments, validate documents with AI, issue certifications and generate reports for around 12,000 apprentices and 62 programs. Role- and attribute-based access control over 25 tables with RLS, and a schema built to grow from one training center to many.'},
  cols:[{t:{es:'Interfaz',en:'Interface'},n:['Next.js','TypeScript']},{t:{es:'Reglas',en:'Rules'},n:[{es:'Roles y atributos',en:'Roles + attributes'},'CASL']},{t:{es:'Datos',en:'Data'},n:['PostgreSQL','Redis']},{t:{es:'Despliegue',en:'Deploy'},n:['Docker','Dokploy']}]},
 {id:'onbase',name:'Robot SGDEA / OnBase',k:'pro',stk:'Python, Playwright',
- d:{es:'Automatiza el ingreso de documentos de aprendices a los expedientes electrónicos, con reanudación por puntos de control y trazabilidad de cada carga.',en:'Automates uploading apprentice documents into electronic case files, with checkpoint resume and a trace of every upload.'},
+ d:{es:'Automatiza el ingreso de documentos de aprendices a los expedientes electrónicos: 2.870 documentos cargados con un 100 % de efectividad y cerca de 133 horas de trabajo manual ahorradas, con reanudación por puntos de control y trazabilidad de cada carga.',en:'Automates uploading apprentice documents into electronic case files: 2,870 documents uploaded at 100% success and nearly 133 hours of manual work saved, with checkpoint resume and a trace of every upload.'},
  cols:[{t:{es:'Entrada',en:'Input'},n:['Excel',{es:'Carpeta',en:'Folder'}]},{t:'Robot',n:['Python','Playwright']},{t:{es:'Destino',en:'Target'},n:['OnBase / SGDEA']},{t:{es:'Control',en:'Control'},n:[{es:'Puntos de control',en:'Checkpoints'}]}]},
 {id:'asistencia',name:{es:'Registro de Asistencia',en:'Attendance Register'},k:'pro',stk:'Next.js, Prisma, PostgreSQL',
- d:{es:'Registro de asistencia con código QR y firma digital que reemplaza los formatos en papel.',en:'Attendance tracking with QR codes and digital signatures that replaces paper forms.'},
+ d:{es:'Registro de asistencia con código QR y firma digital que reemplaza dos formatos en papel, con 467 pruebas automatizadas detrás.',en:'Attendance tracking with QR codes and digital signatures that replaces two paper forms, backed by 467 automated tests.'},
  cols:[{t:{es:'Cliente',en:'Client'},n:['Next.js','QR']},{t:{es:'Servidor',en:'Server'},n:['Prisma',{es:'Firma digital',en:'Digital signature'}]},{t:{es:'Datos',en:'Data'},n:['PostgreSQL']}]},
 {id:'cmdb',name:'CMDB',k:'pro',stk:'Next.js, SQLite, Playwright',
- d:{es:'Inventario de activos tecnológicos de varias sedes, con scripts que recogen los datos de los equipos de forma automática.',en:'Technology asset inventory across several sites, with scripts that collect device data automatically.'},
+ d:{es:'Inventario de activos tecnológicos con 984 equipos registrados en tres sedes, y scripts que recogen los datos de cada equipo de forma automática.',en:'Technology asset inventory with 984 devices recorded across three sites, and scripts that collect each device data automatically.'},
  cols:[{t:{es:'Equipos',en:'Devices'},n:[{es:'Scripts de inventario',en:'Inventory scripts'}]},{t:'App',n:['Next.js']},{t:{es:'Datos',en:'Data'},n:['SQLite']}]},
 {id:'gcly',name:'GCly',k:'pro',stk:'tRPC, Drizzle ORM, Supabase',
- d:{es:'Plataforma SaaS multi-tenant para generar documentos oficiales con IA y firma digital.',en:'Multi-tenant SaaS platform to generate official documents with AI and digital signatures.'},
+ d:{es:'Plataforma SaaS multi-tenant para generar documentos oficiales con IA y firma digital PAdES con validez criptográfica.',en:'Multi-tenant SaaS platform to generate official documents with AI and PAdES digital signatures with cryptographic validity.'},
  cols:[{t:'App',n:[{es:'Aplicación web',en:'Web app'}]},{t:'API',n:['tRPC','Multi-tenant']},{t:'IA',n:[{es:'Generación de documentos',en:'Doc generation'}]},{t:{es:'Datos',en:'Data'},n:['Drizzle ORM','Supabase']}]},
 {id:'aprendices',name:{es:'App de Aprendices',en:'Apprentices App'},k:'pro',stk:'TypeScript, React, Firebase',
  d:{es:'Aplicación móvil para aprendices con recursos académicos, horarios y comunicados institucionales.',en:'Mobile app for apprentices with academic resources, schedules and institutional announcements.'},
  cols:[{t:'App',n:['TypeScript','React']},{t:{es:'Servicios',en:'Services'},n:['Firebase']}]},
+{id:'sirea',name:'SIREA',k:'pro',stk:'Python, FastAPI, SQLAlchemy, Tkinter, PostgreSQL',
+ d:{es:'Registro del uso de equipos en los ambientes de formación. Funciona sin internet y sincroniza sin duplicados: agente de escritorio en Windows, API, panel web y reportes en Excel.',en:'Tracks computer usage in training rooms. Works offline and syncs without duplicates: a Windows desktop agent, an API, a web panel and Excel reports.'},
+ cols:[{t:{es:'Campo',en:'Field'},n:[{es:'Agente Windows',en:'Windows agent'},'SQLite']},{t:'API',n:['FastAPI','SQLAlchemy']},{t:{es:'Datos',en:'Data'},n:['PostgreSQL']},{t:{es:'Sin duplicados',en:'No duplicates'},n:['UUID',{es:'Sincronización',en:'Sync'}]}]},
+{id:'sirs',name:'SIRS',k:'pro',stk:'React, TypeScript, Supabase, PostgreSQL',
+ d:{es:'Documenta la infraestructura de red: sedes, centros de cableado, dispositivos, conexiones y transceivers, con búsqueda por IP, MAC, serial o ubicación y exportación a PDF, Excel y CSV.',en:'Documents network infrastructure: sites, wiring centres, devices, links and transceivers, with search by IP, MAC, serial or location and export to PDF, Excel and CSV.'},
+ cols:[{t:{es:'Entrada',en:'Input'},n:[{es:'Inventario de red',en:'Network inventory'}]},{t:'App',n:['React','TypeScript']},{t:{es:'Datos',en:'Data'},n:['Supabase','PostgreSQL']},{t:{es:'Salida',en:'Output'},n:['PDF','Excel','CSV']}]},
+{id:'chart',name:'SENA Chart Studio',k:'pro',stk:'TypeScript, SVG, Playwright',
+ d:{es:'Convierte el reporte PE-04 en gráficas editables para el informe institucional: 28 gráficas, comparación de periodos y exportación a PNG, SVG, CSV y ZIP. Arma el panorama de 47.202 aprendices dentro del navegador.',en:'Turns the PE-04 report into editable charts for the institutional report: 28 charts, period comparison and export to PNG, SVG, CSV and ZIP. Builds the picture of 47,202 apprentices inside the browser.'},
+ cols:[{t:{es:'Entrada',en:'Input'},n:[{es:'Reporte PE-04',en:'PE-04 report'}]},{t:{es:'Gráficas',en:'Charts'},n:[{es:'28 gráficas',en:'28 charts'},'SVG']},{t:{es:'Salida',en:'Output'},n:['PNG','CSV','ZIP']}]},
+{id:'gclyapp',name:'GCly Mobile',k:'pro',stk:'Kotlin, Jetpack Compose, Supabase',
+ d:{es:'App Android para registrar obligaciones contractuales, actividades y evidencia fotográfica sin conexión, con sincronización al recuperar la señal y verificación de las políticas de acceso contra el backend.',en:'Android app to record contractual obligations, activities and photo evidence offline, syncing when the connection returns and verifying access policies against the backend.'},
+ cols:[{t:'App',n:['Kotlin','Jetpack Compose']},{t:{es:'Modo',en:'Mode'},n:[{es:'Sin conexión',en:'Offline-first'}]},{t:{es:'Datos',en:'Data'},n:['Supabase']}]},
+{id:'n8n',name:{es:'Automatizaciones n8n',en:'n8n automations'},k:'pro',stk:'n8n, LLM, MCP, OCR, Google Workspace',
+ d:{es:'Flujos que validan los documentos de matrícula a un ritmo de 150 a 200 casos por día, escriben el estado en Google Sheets y avisan por correo las incidencias; más un agente que resuelve cuestionarios leyendo imágenes con OCR e IA a través de MCP.',en:'Flows that validate enrollment documents at 150 to 200 cases per day, write the status into Google Sheets and email the findings; plus an agent that answers questionnaires by reading images with OCR and AI over MCP.'},
+ cols:[{t:{es:'Disparador',en:'Trigger'},n:['Google Drive']},{t:{es:'Lectura',en:'Reading'},n:['OCR']},{t:'IA',n:['LLM','MCP']},{t:{es:'Salida',en:'Output'},n:['Sheets','Gmail']}]},
 {id:'exogena',name:{es:'Generador Exógena',en:'Exogenous Generator'},k:'pers',stk:'Python, FastAPI, SQLite',
  d:{es:'Genera y valida los reportes de información exógena que exige la DIAN: extracción de datos, validación y formato oficial.',en:'Generates and validates the exogenous information reports required by the DIAN: data extraction, validation and official format.'},
  cols:[{t:{es:'Fuente',en:'Source'},n:[{es:'Datos contables',en:'Accounting data'}]},{t:{es:'Proceso',en:'Process'},n:['Python','FastAPI']},{t:{es:'Salida',en:'Output'},n:[{es:'Formato DIAN',en:'DIAN format'}]}]},
-{id:'secopia',name:'Secopia',k:'pers',stk:'Python, Go, Docker',
- d:{es:'Flujos de datos sensibles con cifrado, control de acceso y respaldos seguros.',en:'Sensitive data workflows with encryption, access control and secure backups.'},
+{id:'secopia',name:'Secopia',k:'pers',stk:'Next.js, TypeScript, Typesense, Redis, Docker',
+ d:{es:'Buscador de contratación pública: consulta los datos abiertos de SECOP I y II sin registro ni CAPTCHA, con más de cinco millones de contratos y un índice de búsqueda propio de casi dos millones de documentos.',en:'Public procurement search: queries Colombia open SECOP I and II data with no signup or CAPTCHA, over five million contracts and its own search index of nearly two million documents.'},
  cols:[{t:{es:'Entrada',en:'Input'},n:[{es:'Datos sensibles',en:'Sensitive data'}]},{t:{es:'Núcleo',en:'Core'},n:[{es:'Cifrado',en:'Encryption'},{es:'Control de acceso',en:'Access control'}]},{t:{es:'Respaldo',en:'Backup'},n:[{es:'Copias seguras',en:'Secure copies'}]}]},
 {id:'mcp',name:'MCP Secopia',k:'pers',stk:'TypeScript, Node.js, Python',
  d:{es:'Conecta modelos de IA con el backend de Secopia mediante Model Context Protocol.',en:'Connects AI models to the Secopia backend through Model Context Protocol.'},
