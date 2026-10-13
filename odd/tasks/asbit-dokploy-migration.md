@@ -54,7 +54,8 @@ port 80, Traefik router on entrypoint `web` (Cloudflare terminates TLS; `acme.js
 | T4 | S4, S9 | Inline (parent, verified over SSH) | deploy `done`, service 1/1, router verified |
 | T5 | S7, S8 | User-owned (Cloudflare Tunnel hostname) + parent verification | cutover: tunnel public hostname `asbit.me` → `http://localhost:80` |
 | T6 | S7 | User-owned (Cloudflare Redirect Rules) + parent verification | `www.asbit.me` and `asbit.dev` 301 → `https://asbit.me` |
-| T7 | S2 | Parent, after the cutover check | unpublish GitHub Pages + remove `CNAME` from `Andrez421.github.io` |
+| T7 | S2 | Parent, after the Cloudflare fixes | unpublish GitHub Pages + remove `CNAME` from `Andrez421.github.io` |
+| T8 | S1 | User-owned (Cloudflare Scrape Shield) + parent re-check | stop Email Address Obfuscation from rewriting the HTML, then verify byte fidelity |
 
 ## Log
 
@@ -150,3 +151,40 @@ status 301, query string preserved: one in the `asbit.me` zone for hostname `www
 one in the `asbit.dev` zone for hostname `asbit.dev` (which also clears the current HTTP 525
 without touching the broken origin). Pages stays published until the cutover check passes, so
 the rollback path (revert the `asbit.me` DNS record) keeps serving the old design.
+
+L14 (T5 done, T6/T8 blocked, 2026-10-13): `asbit.me` now serves the new site —
+`https://asbit.me/` → 200, `<title>Andrés Sebastián Bravo — Desarrollador Full Stack</title>`,
+`server: cloudflare`, `last-modified` = the nginx file timestamp. So the tunnel hostname works and
+the Dokploy origin is behind it.
+
+Two separate defects, both on the Cloudflare side, with evidence:
+
+1. `www.asbit.me` does not resolve: `dig www.asbit.me` → `status: NXDOMAIN`, 0 answers. Redirect
+   Rules are evaluated at the edge only for hostnames that resolve to Cloudflare through a
+   **proxied** record in the zone, so the rule can never fire. Fix: add a proxied (orange)
+   `A www → 192.0.2.1` record (RFC 5737 documentation address; never contacted because the edge
+   answers first) or a proxied `CNAME www → asbit.me` in the `asbit.me` zone.
+2. `asbit.dev` still reaches an origin instead of matching a rule: `https://asbit.dev/` → 525 and
+   `http://asbit.dev/` → 200 with a foreign parked page (`data-adblockkey`, `lang="en"`).
+   Redirect Rules are scoped per zone, so a rule authored in the `asbit.me` zone with a
+   `hostname eq "asbit.dev"` expression never sees asbit.dev traffic; the rule has to live in the
+   `asbit.dev` zone.
+
+Also observed (T8): Cloudflare rewrites the delivered HTML. Diff against `index.html` shows
+`mailto:asbravopa@gmail.com` replaced by `/cdn-cgi/l/email-protection#…` plus
+`<span class="__cf_email__" data-cfemail="…">[email protected]</span>`, and an injected
+`/cdn-cgi/scripts/…/email-decode.min.js` before the inline script, so the served body hash is
+`170c5c3f…f016` instead of `8367ea09…f76602`. Functional check in a real browser (headless
+Chromium, JS on): the decode script runs before the kinetic-typography block, so the DOM ends up
+with `asbravopa@gmail.com` and `href="mailto:asbravopa@gmail.com"` — the page is not visibly
+broken, but byte fidelity between the repo and what Cloudflare serves is lost (and the no-JS
+case degrades to `[email protected]`).
+
+L15 (T6 cause confirmed, 2026-10-13): the user confirmed the `asbit.dev` redirect rule is created
+in the **`asbit.me`** zone (verbatim: "Está en la zona asbit.me"), which is exactly why asbit.dev
+traffic never matches it: Redirect Rules are scoped per zone. Fix is to create it in the
+`asbit.dev` zone, scoped to the apex only — `Hostname equals asbit.dev`, never a
+`*.asbit.dev` wildcard, because `engram.asbit.dev` is a live Dokploy app that must keep working —
+and to remove or disable the misplaced rule in the `asbit.me` zone (where only the `www` rule
+belongs). T7 stays pending until these Cloudflare fixes are verified, so the GitHub Pages
+fallback survives the troubleshooting window.
