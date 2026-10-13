@@ -302,9 +302,12 @@ section .code.hot{color:var(--acc)}
       <article class="row">
         <div class="when">2024</div>
         <div>
-          <h3 data-i18n="e2.role">Técnico de soporte en sitio</h3>
-          <p class="org">Global Talent GT S.A.S. · Bogotá</p>
-          <ul><li data-i18n="e2.b1">Soporte técnico en sitio a usuarios finales: diagnóstico, mantenimiento de equipos e instalación de software.</li></ul>
+          <h3 data-i18n="e2.role">Técnico de servicios de TI en sitio</h3>
+          <p class="org" data-i18n="e2.org">Global Talent GT S.A.S. — consultoría y servicios de TI · Bogotá</p>
+          <ul>
+            <li data-i18n="e2.b1">Prestación de servicios de TI en sitio bajo contrato de consultoría: atención de requerimientos e incidentes y gestión de casos hasta su cierre.</li>
+            <li data-i18n="e2.b2">Mantenimiento preventivo y correctivo de equipos, instalación y configuración de software, y puesta a punto de puestos de trabajo.</li>
+          </ul>
         </div>
       </article>
       <article class="row">
@@ -364,7 +367,7 @@ section .code.hot{color:var(--acc)}
   <div class="in">
     <div class="sh rv"><h2 data-i18n="h.work">Trabajo</h2><p data-i18n="d.work">Lo que he puesto en producción y algunos proyectos propios. Abre cada uno para ver cómo está armado.</p></div>
     <ul class="plist" id="plist"></ul>
-    <p class="stk" data-i18n="work.note">La mayor parte de este trabajo es software institucional y permanece privado por acuerdos de confidencialidad. En público: Secopia, el servidor MCP de SECOP y las automatizaciones de n8n.</p>
+    <p class="stk" data-i18n="work.note">La mayor parte de este trabajo es software institucional y permanece privado por acuerdos de confidencialidad.</p>
   </div>
 </section>
 
@@ -441,8 +444,9 @@ const EN={
 "e1.b5":"Full platform migration between servers: 100% of the data — database and storage — restored with checksum-verified backups and a domain cutover with no downtime.",
 "e1.b6":"Security and personal data by design: role- and attribute-based access control, RLS on every table, rate limiting, CSP, security audits and Colombian data-protection rules (Ley 1581).",
 "e1.b7":"Quality and mentoring: automated test suites covering thousands of cases across every production project, database verification as a mandatory integration check, documented architecture decisions and code review for interns with a rubric.",
-"e2.role":"On-site support technician",
-"e2.b1":"On-site technical support for end users: diagnosis, equipment maintenance and software installation.",
+"e2.role":"On-site IT services technician","e2.org":"Global Talent GT S.A.S. — IT consulting and services · Bogotá",
+"e2.b1":"On-site IT service delivery under a consultancy contract: handling requests and incidents and managing cases through to closure.",
+"e2.b2":"Preventive and corrective equipment maintenance, software installation and configuration, and workstation setup.",
 "e3.role":"Service desk agent L2",
 "e3.b1":"Diagnosis and resolution of incidents and requests under ITIL practices, managing cases in BMC Helix.",
 "e3.b2":"Direct user support and communication with the client and the service supervisors.",
@@ -460,7 +464,7 @@ const EN={
 "e6.b2":"On-site technical support for retail and small business: preventive and corrective maintenance, software and user support.",
 "edu.t":"Education","cert.t":"Certifications",
 "h.work":"Work","d.work":"What I've put into production and a few personal projects. Open each one to see how it's put together.",
-"work.note":"Most of this work is institutional software and stays private under confidentiality agreements. Public: Secopia, the SECOP MCP server and the n8n automations.",
+"work.note":"Most of this work is institutional software and stays private under confidentiality agreements.",
 "d.stack":"Four layers and what surrounds them.","pl.db":"Data","pl.op":"Infrastructure",
 "x1.t":"AI","x1b.t":"Automation","x2.t":"Security and observability","x3.t":"Quality and process",
 "c.lead":"Is there a system to build or get running?",
