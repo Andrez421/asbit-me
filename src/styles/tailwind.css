@@ -2,7 +2,12 @@
    Preflight is deliberately NOT imported: the design's own reset lives in
    effects.css and must keep governing the base styles, so nothing can shift. */
 @import "tailwindcss/theme.css" layer(theme);
-@import "tailwindcss/utilities.css" layer(utilities);
+@import "tailwindcss/utilities.css" layer(utilities) source(none);
+@source "../components";
+@source "../layouts";
+@source "../pages";
+@source "../scripts";
+@source "../../tools";
 @import "./effects.css";
 
 /* Design tokens from the portfolio, exposed to Tailwind so utility classes can
