@@ -214,12 +214,51 @@ token must be probed with real endpoints rather than trusted on that call. Write
 `asbit.me` (`fde5bf5b8937295e9a097108924cdcda`) and `asbit.dev`
 (`813763f2bb2cc0701cbaf2934b131325`).
 
-L18 (consequence, 2026-10-13): neither zone holds a single redirect rule today — the
-`http_request_dynamic_redirect` rulesets exist but are empty (`asbit.dev`
-`bc1885148edf40efa201dc54ca28dc39` v4, `asbit.me` `9b1ff0c9444749509cc59ea2c459f317` v3). The
-dashboard never persisted anything, not even the `www` rule, which matches the
-`action is required for action parameters` failure. Rules must be added to those existing
-rulesets rather than creating new ones.
+L18 (superseded by L20 — the inference below is WRONG): I read `GET /zones/{id}/rulesets`, saw no
+rules, and concluded that neither zone held any redirect rule and that the dashboard had never
+persisted anything. The list endpoint **omits the `rules` array**; rules are only returned by
+`GET /zones/{id}/rulesets/{id}`. Both zones did have a live rule, so the conclusion — and the
+claim that the `www` rule never saved — was false. Corrected in L20.
+
+L20 (real inventory, 2026-10-13, after the user supplied a token with full permissions):
+
+- `asbit.me` ruleset `9b1ff0c9444749509cc59ea2c459f317` (v3) already held the user's `www` rule:
+description "Redirigir de WWW a raíz [Plantilla]", expression
+`(http.request.full_uri wildcard r"https://www.*")`, target
+`wildcard_replace(http.request.full_uri, r"https://www.*", r"https://${1}")`, status 301,
+`preserve_query_string: false`, enabled — and the DNS record `A www.asbit.me → 192.0.2.1`
+(proxied) existed. So `https://www.asbit.me/` was already answering 301 → `https://asbit.me/`;
+the earlier NXDOMAIN reading was taken before that record existed.
+- `asbit.me` zone settings: `email_obfuscation = off` (the HTML rewrite is gone — the served body
+hashes exactly to `index.html` and contains zero `cdn-cgi` references), `automatic_https_rewrites
+= on`, `ssl = full`.
+- `asbit.dev` ruleset `bc1885148edf40efa201dc54ca28dc39` (v4) held exactly one live rule,
+unrelated to this migration: description "redirigir_engram" → `https://engram.asbit.dev/dashboard/`.
+Nothing existed for the apex, which is why it still reached an origin.
+- `asbit.dev` DNS: `asbit.dev`, `www.asbit.dev` and `*.asbit.dev` all point at `91.195.240.94`
+(a parking origin, hence https 525 and http 200 with an ad-keyed parked page), plus `engram` and
+`dokploy` CNAMEs to the tunnel `b3abe52d-05e6-45e0-8107-b09134b2c014.cfargotunnel.com`.
+
+L21 (T6 closed, 2026-10-13): the documented operation for a zone that already has a phase entry
+point ruleset is `PUT /zones/{zone}/rulesets/{ruleset_id}` with the complete rules array (creating
+a new ruleset applies only when none exists). The script read the ruleset first, preserved the
+existing rule verbatim (id, ref, expression, description, action, action_parameters, enabled),
+refused to write if an apex rule already existed, and appended one rule: expression
+`(http.host eq "asbit.dev")`, `action: "redirect"`, target
+`concat("https://asbit.me", http.request.uri.path)`, status 301, `preserve_query_string: true`,
+enabled. Result: PUT 200 with both rules present. Verified afterwards — `asbit.dev/` → 301
+`https://asbit.me/`; `asbit.dev/proyectos?x=1&y=2` → 301 `https://asbit.me/proyectos?x=1&y=2`
+(path and query preserved); `http://asbit.dev/` → 301; `engram.asbit.dev/` → 301 `/dashboard/`
+unchanged; `www.asbit.me/` → 301; `asbit.me/` → 200 with body sha256 `8367ea09…f76602`.
+
+L22 (T7 partial, 2026-10-13): removed `CNAME` from `Andrez421/Andrez421.github.io` (commit
+`5488926`), so the repository no longer claims `asbit.me`. `DELETE /repos/{owner}/{repo}/pages`
+answers `422 Deactivating GitHub pages for this repository is not allowed` — GitHub refuses to
+deactivate Pages for a `<user>.github.io` repository. Pages rebuilt as a plain user site
+(`cname: null`, `html_url: https://andrez421.github.io/`) and still serves the old design
+byte-for-byte (`b26679b2…`). The remaining action is a UI one (Settings → Pages → Branch: None)
+or accepting the snapshot; `asbit.me` is unaffected either way, verified against the Dokploy
+origin.
 
 L19 (T6 still blocked, 2026-10-13): after the user reported editing the token permissions
 ("edite los permisos del token, no estan como dices, pero habilite todos los relacionados"), a
