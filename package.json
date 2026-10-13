@@ -1,0 +1,23 @@
+{
+  "name": "asbit-me",
+  "type": "module",
+  "private": true,
+  "version": "2.0.0",
+  "description": "Personal portfolio — Astro + Tailwind, deployed with Dokploy",
+  "packageManager": "pnpm@11.9.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "i18n-check": "node tools/i18n-check.mjs",
+    "visual-check": "node tools/visual-check.mjs"
+  },
+  "dependencies": {
+    "astro": "^7.3.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "puppeteer-core": "^25.13.0",
+    "tailwindcss": "^4.3.3"
+  }
+}

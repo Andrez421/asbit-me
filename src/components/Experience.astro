@@ -1,0 +1,100 @@
+---
+import { STUDIES, CERTS, type Entry } from '../data/studies';
+
+const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+/** Same markup the old runtime `rows()` produced, but generated once here.
+ *  A `data-i18n` key is emitted only for values that really differ per language. */
+function row(r: Entry, pre: string, i: number): string {
+  const y = typeof r.y === 'string' ? `<i>${esc(r.y)}</i>` : `<i data-i18n="${pre}.${i}.y">${esc(r.y.es)}</i>`;
+  const t = typeof r.t === 'string' ? esc(r.t) : `<span data-i18n="${pre}.${i}.t">${esc(r.t.es)}</span>`;
+  const s = typeof r.s === 'string' ? `<small>${esc(r.s)}</small>` : `<small data-i18n="${pre}.${i}.s">${esc(r.s.es)}</small>`;
+  return `<div class="erow">${y}<div>${t}${s}</div></div>`;
+}
+const studies = STUDIES.map((r, i) => row(r, 's', i)).join('');
+const certs = CERTS.map((r, i) => row(r, 'c', i)).join('');
+---
+
+<section id="experience" class="pap">
+  <div class="in">
+    <div class="sh rv"><h2 data-i18n="h.exp">Trayectoria</h2><p data-i18n="d.exp">Más de diez años en TI: del soporte técnico a las plataformas en producción.</p></div>
+    <div class="rows">
+      <article class="row">
+        <div class="when"><i class="dot"></i><span data-i18n="e1.d">2024 – Actualidad</span></div>
+        <div>
+          <h3 data-i18n="e1.role">Analista de Sistemas y Desarrollador Full Stack</h3>
+          <p class="org">SENA, Regional Cauca, Centro de Comercio y Servicios · Popayán</p>
+          <ul>
+            <li data-i18n="e1.b1">Análisis, diseño y construcción de plataformas en producción para matrícula, certificación, etapa productiva, inventario de activos y reportería, usadas a diario por unos 12.000 aprendices.</li>
+            <li data-i18n="e1.b2">Validación documental con IA (Gemini y Vertex AI): OCR, puntaje de confianza por documento y reintentos automáticos en las colas de trabajo.</li>
+            <li data-i18n="e1.b3">Automatización de procesos con n8n y robots de navegador: el cargue de documentos a expedientes bajó de minutos a segundos por documento (cerca de un 93 % menos tiempo y el equivalente a 17 jornadas de trabajo manual) y la validación de matrícula cubre hasta 200 casos diarios sola.</li>
+            <li data-i18n="e1.b4">Infraestructura propia en cinco servidores con despliegues automáticos sobre Docker Swarm, Dokploy y Traefik, Supabase self-hosted, Cloudflare y Tailscale, más observabilidad con OpenTelemetry y OpenObserve.</li>
+            <li data-i18n="e1.b5">Migración completa de plataformas entre servidores: restauración del 100 % de los datos —base de datos y almacenamiento— con copias verificadas por checksum y corte de dominio sin interrupción.</li>
+            <li data-i18n="e1.b6">Seguridad y datos personales desde el diseño: control de acceso por roles y atributos, RLS en todas las tablas, límites de peticiones, CSP, auditorías de seguridad y lineamientos de la Ley 1581.</li>
+            <li data-i18n="e1.b7">Calidad y acompañamiento: suites de pruebas automatizadas de miles de casos en cada proyecto en producción, verificación de base de datos como requisito obligatorio de integración, decisiones de arquitectura documentadas y revisión de código a pasantes con rúbrica.</li>
+          </ul>
+        </div>
+      </article>
+      <article class="row">
+        <div class="when">2024</div>
+        <div>
+          <h3 data-i18n="e2.role">Técnico de servicios de TI en sitio</h3>
+          <p class="org" data-i18n="e2.org">Global Talent GT S.A.S. — consultoría y servicios de TI · Bogotá</p>
+          <ul>
+            <li data-i18n="e2.b1">Prestación de servicios de TI en sitio bajo contrato de consultoría: atención de requerimientos e incidentes y gestión de casos hasta su cierre.</li>
+            <li data-i18n="e2.b2">Mantenimiento preventivo y correctivo de equipos, instalación y configuración de software, y puesta a punto de puestos de trabajo.</li>
+          </ul>
+        </div>
+      </article>
+      <article class="row">
+        <div class="when">2022 – 2023</div>
+        <div>
+          <h3 data-i18n="e3.role">Agente de mesa de servicios N2</h3>
+          <p class="org">Pear Solutions · Proyecto SENA–Telefónica</p>
+          <ul>
+            <li data-i18n="e3.b1">Diagnóstico y resolución de incidentes y solicitudes bajo prácticas ITIL, con gestión de casos en BMC Helix.</li>
+            <li data-i18n="e3.b2">Atención directa a usuarios y comunicación con el cliente y los supervisores del servicio.</li>
+          </ul>
+        </div>
+      </article>
+      <article class="row">
+        <div class="when">2018 – 2020</div>
+        <div>
+          <h3 data-i18n="e4.role">Xtreme Cyber — soporte técnico y soluciones a medida</h3>
+          <p class="org" data-i18n="e4.org">Propietario y administrador · Popayán</p>
+          <ul>
+            <li data-i18n="e4.b1">Soporte y soluciones a medida para pymes y comercio local: mantenimiento de equipos, instalación y actualización de software, y redes de datos.</li>
+            <li data-i18n="e4.b2">Asesoría y capacitación TIC personalizada, adaptando cada solución al tamaño y al presupuesto del negocio.</li>
+            <li data-i18n="e4.b3">Operación del negocio de punta a punta: atención al cliente, inventario y servicio técnico.</li>
+          </ul>
+        </div>
+      </article>
+      <article class="row">
+        <div class="when">2016 – 2018</div>
+        <div>
+          <h3 data-i18n="e5.role">Técnico en sistemas</h3>
+          <p class="org">R&amp;S Soluciones · Cartagena</p>
+          <ul>
+            <li data-i18n="e5.b1">Diagnóstico del funcionamiento de hardware y software, cumpliendo las especificaciones técnicas contratadas.</li>
+            <li data-i18n="e5.b2">Asistencia tecnológica presencial y remota, con implementación de soluciones a fallas recurrentes.</li>
+          </ul>
+        </div>
+      </article>
+      <article class="row">
+        <div class="when">2011 – 2016</div>
+        <div>
+          <h3 data-i18n="e6.role">Soporte técnico y sistemas</h3>
+          <p class="org" data-i18n="e6.org">Varias empresas · Nariño, Cauca y Bogotá</p>
+          <ul>
+            <li data-i18n="e6.b1">Auxiliar de sistemas: actualización de datos, control de inventarios y detección de inconsistencias y fraude.</li>
+            <li data-i18n="e6.b2">Soporte técnico en sitio a comercio y pyme: mantenimiento preventivo y correctivo, software y atención a usuarios.</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+    <div class="edu">
+      <div class="rv"><h3 data-i18n="edu.t">Estudios</h3><div id="studies" set:html={studies}></div></div>
+      <div class="rv"><h3 data-i18n="cert.t">Certificaciones</h3><div id="certs" set:html={certs}></div></div>
+    </div>
+  </div>
+</section>

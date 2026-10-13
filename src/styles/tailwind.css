@@ -1,0 +1,23 @@
+/* Tailwind 4 — theme + utilities only.
+   Preflight is deliberately NOT imported: the design's own reset lives in
+   effects.css and must keep governing the base styles, so nothing can shift. */
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+@import "./effects.css";
+
+/* Design tokens from the portfolio, exposed to Tailwind so utility classes can
+   reference them (text-pfg, bg-pacc, font-disp, …). */
+@theme {
+  --color-pbg: #ecedef;
+  --color-pfg: #0b0c0e;
+  --color-pmid: #62666e;
+  --color-pacc: #2b3ff5;
+  --color-qbg: #0b0c0e;
+  --color-qfg: #ecedef;
+  --color-qmid: #8e929b;
+  --color-qacc: #8c99ff;
+
+  --font-disp: 'Roboto Flex', 'Helvetica Neue', Arial, sans-serif;
+  --font-sans: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+}

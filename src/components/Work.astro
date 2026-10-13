@@ -1,0 +1,17 @@
+---
+import { PROJECTS } from '../data/projects';
+import ProjectCard from './ProjectCard.astro';
+
+/** The card that used to start open in the runtime version. */
+const openId = 'pgaa';
+---
+
+<section id="work" class="inv">
+  <div class="in">
+    <div class="sh rv"><h2 data-i18n="h.work">Trabajo</h2><p data-i18n="d.work">Lo que he puesto en producción y algunos proyectos propios. Abre cada uno para ver cómo está armado.</p></div>
+    <ul class="plist" id="plist">
+      {PROJECTS.map((p) => <ProjectCard project={p} open={p.id === openId} />)}
+    </ul>
+    <p class="stk" data-i18n="work.note">La mayor parte de este trabajo es software institucional y permanece privado por acuerdos de confidencialidad.</p>
+  </div>
+</section>

@@ -1,6 +1,11 @@
+# Build output and dependencies
+node_modules/
+dist/
+.astro/
+
 # Local agent tooling state (skill registry, caches).
 .atl/
 
-# Local snapshot of the version handed over on 2026-10-13. The deployed file is
-# index.html; edit index.html and copy over it if you start from a vN draft.
+# Local snapshot of the version handed over on 2026-10-13. The site is now built
+# from src/ with Astro; this file is kept only as a local reference.
 index-v3.html
