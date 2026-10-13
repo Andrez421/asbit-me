@@ -260,6 +260,35 @@ byte-for-byte (`b26679b2…`). The remaining action is a UI one (Settings → Pa
 or accepting the snapshot; `asbit.me` is unaffected either way, verified against the Dokploy
 origin.
 
+L23 (independent verification, 2026-10-13): a `gentle-ai-verify` subagent (read-only: only GET,
+no writes, no restarts) re-derived every claim instead of trusting this record, and returned
+CONFIRMED for all six: `asbit.me` 200 with the body hashing to `8367ea09…f76602` and zero
+`cdn-cgi` references; `www.asbit.me/` 301 → `https://asbit.me/`; `asbit.dev/` 301 with path and
+query preserved; `engram.asbit.dev/` still 301 → `/dashboard/` (four runs); the `asbit.dev`
+ruleset holding exactly two rules; and on the host the service at 1/1, the `asbit.me` origin at
+200, an unknown Host at 404, plus the Traefik file rule `Host(asbit.me)`. Strongest piece of
+evidence for the shared-ruleset risk: it diffed ruleset **version 4 against version 5** and found
+the engram rule byte-identical, so the PUT that added the apex rule provably did not alter the
+pre-existing rule (v4 = 1 rule, v5 = 2 rules).
+
+Counter-evidence worth knowing (pre-existing traits, not regressions):
+- Path-preserving redirects land on a 404 for deep paths, because the site is a single file.
+  `asbit.dev/proyectos?x=1&y=2` → 301 → `https://asbit.me/proyectos?x=1&y=2` → **404**, and the
+  same is true of the longer-standing `www` template rule (`www.asbit.me/algo` →
+  `asbit.me/algo` → 404). The old GitHub Pages site was also a single `index.html`, so deep paths
+  already 404'd there: no regression, but for a parked domain like `asbit.dev` — where no real
+  deep links exist — pointing the redirect at the root is friendlier. Pending user decision.
+- `www.asbit.dev` and `*.asbit.dev` still reach the parking origin `91.195.240.94` (https 525,
+  http parked page). The new rule is strictly apex-scoped, which is why nothing broadened.
+- `hermes.asbit.me` (Cloudflare Access), `dokploy.asbit.dev` and the tunnel CNAMEs were probed and
+  are unaffected.
+
+L24 (RDD assessment, 2026-10-13): the clone's review switch is on (`gentle-ai review mode status`:
+global on). `gentle_review` ASSESS returned `risk: unassessable` / `nativeRisk: unassessable`
+because the change set is already committed and therefore has no pending candidate, and its plan
+prescribes exactly what ran: `writerSelfVerification: true` and `independentVerifier: true`.
+Native review was not started, because no `reviewDue` was reported for this candidate.
+
 L19 (T6 still blocked, 2026-10-13): after the user reported editing the token permissions
 ("edite los permisos del token, no estan como dices, pero habilite todos los relacionados"), a
 re-probe with the same stored token still returns 403 on all four endpoints. Two rounds 30 s
