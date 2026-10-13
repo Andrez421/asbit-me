@@ -85,6 +85,32 @@ Document AI) and `Automatización` (n8n, Playwright, Google Apps Script, Google 
 four base layers gained Astro, Android/Kotlin, Go, SQLAlchemy, Supabase self-hosted, Typesense,
 OpenTelemetry and OpenObserve; `.cols+.cols` now renders four columns.
 
-L7 (T4): checks — every `data-i18n` key resolves in the English dictionary, the inline script
-passes `node --check`, the Spanish and English renders were captured headless, and the deployed
-bytes were re-hashed against `index.html` after Dokploy redeployed.
+L7 (T4, closed): checks actually observed — 47 `data-i18n` keys with **0** missing from the
+English dictionary and **0** unused entries; the inline script passes `node --check`; 14 project
+objects with valid shape and no `{es}` literal without its `{en}` pair; headless Chromium renders
+both branches (Spanish, and English forced through the same code path the EN button uses) with 7
+bullets, 14 cards, the `IA` / `Automatización` columns and zero `undefined` in the DOM; the
+Trayectoria, Trabajo and Stack sections were captured and reviewed as images. Live check after
+deploy: `https://asbit.me` serves body sha256 `9c012c44…21de9`, identical to the local
+`index.html`, with the new strings present in the served HTML.
+
+L8 (correction, 2026-10-13): I first concluded that auto-deploy had broken, because the live site
+kept serving the older bytes and the newest deployment row still named an old commit. That
+conclusion was wrong and the fault was mine: six commits (`bbfcdd3`, `ae805c0`, `03415c8`,
+`ef05715`, `9d0b253`, `121201d`) had been committed **without pushing** — my commit command
+dropped the `git push` I had been appending before. Auto-deploy was healthy the whole time: a
+deployment row exists for every commit that was actually pushed (`c4666ab` 05:01, `85c54ad`
+05:08, `a3ad730` 05:24), and `git ls-remote` from Dokploy's own clone returned `a3ad730`, exactly
+the pushed head. Pushing the six commits produced deployment 08:44 (`done`) on its own. Practical
+rule for the rest of this work: push in the same command as the commit, or check
+`git log origin/main..HEAD` before blaming the deploy. Note also that Dokploy stores a GitHub App
+installation token inside its clone's `origin` URL (root-readable, valid about an hour), which is
+why a raw `git remote -v` on the host prints a credential.
+
+L9 (one content judgement to confirm): the `Secopia` card described "sensitive data workflows with
+encryption and secure backups", which contradicts the project's own record — the CV describes it
+as the open-source **public procurement search** over SECOP I and II (5M+ contracts, Typesense
+index of ~1.9M documents, MCP server), the live infrastructure on the host runs
+`secopia-search` with Typesense and Redis, and the domain is `secop-ia.app`. The card was updated
+to the search-engine description on that evidence and its stack corrected from `Python, Go, Docker`
+to `Next.js, TypeScript, Typesense, Redis, Docker`. Flagged here for the user to confirm or revert.
