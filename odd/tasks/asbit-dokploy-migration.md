@@ -220,3 +220,14 @@ L18 (consequence, 2026-10-13): neither zone holds a single redirect rule today â
 dashboard never persisted anything, not even the `www` rule, which matches the
 `action is required for action parameters` failure. Rules must be added to those existing
 rulesets rather than creating new ones.
+
+L19 (T6 still blocked, 2026-10-13): after the user reported editing the token permissions
+("edite los permisos del token, no estan como dices, pero habilite todos los relacionados"), a
+re-probe with the same stored token still returns 403 on all four endpoints. Two rounds 30 s
+apart (01:07:28 and 01:07:59) give identical results, so this is not propagation lag. Either the
+permission change did not persist (the same class of failure as the redirect-rule save) or it was
+applied to a different token â€” the `cfat_` prefix suggests the newer token format, where a
+user-owned token and an account-owned token can both exist. The alternative that avoids the
+Cloudflare write path entirely stays on the table: two more tunnel public hostnames
+(`www.asbit.me`, `asbit.dev`) plus a 301 in the container's nginx, versioned in this repo and
+verifiable over SSH.
