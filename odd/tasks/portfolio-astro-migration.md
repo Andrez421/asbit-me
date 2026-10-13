@@ -56,7 +56,7 @@ markup, English in a dictionary, both keyed by `data-i18n`, and the parity check
 | A4 | S3, S7 | Inline (parent) | port the runtime script to wire the static DOM (no DOM construction) |
 | A5 | S4 | Inline (parent), automated | pixel diff old vs new → **0 differing pixels** |
 | A6 | S5 | Inline (parent), measured | performance before/after with the same harness + build output sizes |
-| A7 | S6 | Inline (parent) + live check | build in Docker, deploy through Dokploy, verify the live bytes and routes |
+| A7 | S6 | Inline (parent) + live check | done: Dokploy built the multi-stage image, service 1/1, live diff 0 px |
 
 ## Log
 
@@ -92,3 +92,22 @@ DOMInteractive 799 → 29 ms. Build output: index.html 48,230 B (gzip 9,838), CS
 JS 24,995 B (gzip 10,311) — 92.9 KB total (gzip 25.2 KB) against 67.5 KB (gzip 23.4 KB) before, so the
 first visit is ~1.8 KB heavier gzipped while a repeat visit drops from 23.4 KB to 9.8 KB because CSS
 and JS are now hashed and cacheable. Reported as measured, per S5.
+
+L6 (A7, deploy, 2026-10-13): the first Docker attempt failed with `corepack: not found` — Node 26
+images no longer bundle corepack — so the build stage installs pnpm explicitly (`npm install -g
+pnpm@11.9.0`). The image then built and served correctly locally (200, 48,230 B, CSS 200) and in
+Dokploy: the deployment went `running` → `done` in ~25 s, the service stayed 1/1, and the live site
+returns 200 with 48,230 B, the expected title and the hashed CSS/JS assets. The four routes still
+behave: `asbit.me` 200, `www.asbit.me` 301, `asbit.dev` 301, `engram.asbit.dev` 301. Live pixel diff
+against the pre-migration site: **0 differing pixels**. Live TTFB 0.44/0.47/0.66 s (0.43 s before the
+change — same order, measured through Cloudflare and the tunnel).
+
+L7 (build parity and tooling, 2026-10-13): Tailwind's scanning is now scoped (`source(none)` plus
+explicit `@source` for components, layouts, pages, scripts and tools) so a local build and the
+container build emit byte-identical CSS — 18,142 B in both, against 19,680 B local / 18,453 B
+container before the fix. Two repeatable gates live in `tools/`: `visual-check.mjs` (full-page pixel
+diff via puppeteer-core + ImageMagick, exit code 1 on any difference) and `i18n-check.mjs` (bilingual
+parity over the built HTML). Lesson worth keeping: `prefers-reduced-motion` does **not** stop SMIL, so
+the harness must freeze animations (`setCurrentTime(0)` + `pauseAnimations()`); otherwise the moving
+packet dot in the diagrams produces ~64 false-positive pixels, which is exactly the false alarm the
+first run produced.
