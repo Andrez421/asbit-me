@@ -52,8 +52,9 @@ port 80, Traefik router on entrypoint `web` (Cloudflare terminates TLS; `acme.js
 | T2 | S5 | Inline (parent) | repo `Andrez421/asbit-me` created, `main` pushed (1396c59) |
 | T3 | S3, S6, S9 | Inline (parent, Dokploy API) | app `portafolio-asbit-rzcv7e` + domain `asbit.me:80` |
 | T4 | S4, S9 | Inline (parent, verified over SSH) | deploy `done`, service 1/1, router verified |
-| T5 | S7, S8 | User-owned (Cloudflare Tunnel hostname) + parent verification | DNS cutover to the tunnel |
-| T6 | S2 | User decision at close | retire GitHub Pages / `CNAME`, decide `www` + broken `asbit.dev` |
+| T5 | S7, S8 | User-owned (Cloudflare Tunnel hostname) + parent verification | cutover: tunnel public hostname `asbit.me` → `http://localhost:80` |
+| T6 | S7 | User-owned (Cloudflare Redirect Rules) + parent verification | `www.asbit.me` and `asbit.dev` 301 → `https://asbit.me` |
+| T7 | S2 | Parent, after the cutover check | unpublish GitHub Pages + remove `CNAME` from `Andrez421.github.io` |
 
 ## Log
 
@@ -132,3 +133,20 @@ L11 (T4 done, 2026-10-13): deployment `2al_hsBhG1ygd4jNjwuj8` finished `done`; s
 http://127.0.0.1/` → 200, 55213 bytes, body sha256 `8367ea09…f76602` (identical to
 `index.html`), title `Andrés Sebastián Bravo — Desarrollador Full Stack`; an unknown Host
 returns 404, so the router is host-scoped and not a catch-all.
+
+L12 (T4 checks extended, 2026-10-13): auto-deploy verified for real — pushing `c4666ab`
+produced deployment `Y0ztsbpaoXEP` (`done`, title = commit subject) with no manual trigger.
+Content checks on the delivered file: 1 inline `<script>`, `node --check` passes; 36 `id`s and
+6 internal anchors, none dangling; sections `about/experience/work/stack/contact`;
+`canonical` = `https://asbit.me`; document starts with a doctype and closes with `</html>`.
+Visual check: headless Chromium (1440px) against the container renders the hero, nav, theme and
+language toggles and both web fonts, with no console or network errors.
+
+L13 (T6 decisions, 2026-10-13, verbatim): "Redirección en Cloudflare (recomendado)" for
+`www.asbit.me`; "Despublicar Pages y quitar CNAME (recomendado)" for `Andrez421.github.io`;
+"Redirigir a asbit.me (recomendado)" for the broken `asbit.dev` apex. Redirect rules are
+evaluated at the Cloudflare edge with `concat("https://asbit.me", http.request.uri.path)`,
+status 301, query string preserved: one in the `asbit.me` zone for hostname `www.asbit.me` and
+one in the `asbit.dev` zone for hostname `asbit.dev` (which also clears the current HTTP 525
+without touching the broken origin). Pages stays published until the cutover check passes, so
+the rollback path (revert the `asbit.me` DNS record) keeps serving the old design.
