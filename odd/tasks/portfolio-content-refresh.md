@@ -46,6 +46,28 @@ S7 — The page is bilingual by construction: Spanish lives in the HTML element 
 in the `EN` dictionary keyed by `data-i18n`. Every new or changed string needs both, and the parity
 check must pass (every `data-i18n` key present in `EN`).
 
+S8 — Second round, from the user's own PDF résumé at
+`~/Descargas/Hoja_de_vida_Andres_Sebastian_Bravo_Palacios.pdf` (extracted with `pdftotext`): its
+content may complement the earlier roles and the current one. Verbatim instruction: "verifica en
+descargas Hoja_de_vida_Andres_Sebastian_Bravo_Palacios.pdf ahi hay informacion para complementar
+los otros cargos, incluye solo cosas relevantes. si consideras que se puede sumar algo adicional a
+algunas de ellas hazlo". Only work-relevant material is taken; contact and identity data stays out
+of the public page.
+
+S9 — Metric reframing rule, verbatim: "los datos y cifras son muy especificos, no necesitamos
+especificar tanto mas bien covniertelo en forma de metricas/porcentajes o las mejoras realizadas,
+es decir tiempo ahorrado, procesos ahorrados/optimizado/mejorado etc". Raw internal counts are
+replaced by round scale plus measured improvement (percentages, time saved, processes eliminated),
+and every percentage must be derivable from a figure already recorded in the evidence sources —
+no invented improvements.
+
+S10 — Fill the internal CV's own pending fields, verbatim: "llena los poendientes de cv". The PDF
+is the source for the contact/education/certification fields that the CV marks `[COMPLETAR]`.
+
+S11 — Scope note: the CV's per-project sections are its traceable-evidence layer (`Cada cifra
+tiene fuente trazable`), so its raw figures stay and the metric framing is added as a human-facing
+summary section instead. Flagged to the user rather than assumed.
+
 ## Tasks
 
 | ID | Specs | Route | Commit |
@@ -54,6 +76,10 @@ check must pass (every `data-i18n` key present in `EN`).
 | T2 | S1, S3, S5, S6, S7 | Inline (parent) | Trabajo: 5 new cards + measured impact in the existing ones |
 | T3 | S1, S4, S6, S7 | Inline (parent) | Stack: expanded layers + IA split from Automatización (CSS 4 columns) |
 | T4 | S3, S7 | Inline (parent) + live check | verify: key parity, script syntax, ES/EN render, deployed bytes |
+| T5 | S8, S9, S7 | Inline (parent) | portfolio: earlier-role context from the PDF + metric reframing of every figure |
+| T6 | S10, S8 | Inline (parent) | internal CV: fill sections 1, 9 and 12 from the PDF |
+| T7 | S9, S10 | Inline (parent) | internal CV: add the human-facing measured-impact summary |
+| T8 | S9, S7 | Inline (parent) + live check | verify: parity, renders, deployed bytes |
 
 ## Log
 
@@ -114,3 +140,30 @@ index of ~1.9M documents, MCP server), the live infrastructure on the host runs
 `secopia-search` with Typesense and Redis, and the domain is `secop-ia.app`. The card was updated
 to the search-engine description on that evidence and its stack corrected from `Python, Go, Docker`
 to `Next.js, TypeScript, Typesense, Redis, Docker`. Flagged here for the user to confirm or revert.
+
+L10 (second round inputs, 2026-10-13): the PDF résumé adds nothing new for R&S Soluciones, adds
+context for Pear Solutions ("atención a usuarios en proyecto para el SENA") and confirms the
+current role's formal title as "Analista de Sistemas (funciones de Desarrollador de Software e
+Infraestructura)" — the title published on the page stays the one the user chose in S2. It is also
+the source that resolves the CV's missing fields: full name, phone, portfolio URL, English B1,
+role dates per employer (SENA 2024–present, Pear Solutions 2022–2023, R&S Soluciones 2016–2018),
+Systems Engineering at UNAD (semester 5), Systems Technician at Politécnico del Sur 2010, and the
+ten certifications with year and institution.
+
+L11 (T5, metric reframing): raw internal counts were replaced by round scale plus measured
+improvement. Percentages used, all derived from figures already in the evidence sources: browser
+robot, ~3 min manual per document versus 13.4 s measured = ~93% less time per document and ~17
+working days saved per campaign (133 h over 8 h); enrollment-document validation, 150–200 cases
+per day handled automatically; platform migration, 100% of profiles and storage objects restored
+with all backup checksums verified; paper elimination in the attendance process, both forms gone
+(100%); SIRS container image reduced from ~180 MB to ~50 MB (~72% lighter); audit remediation,
+81% of findings closed with evidence. Scale statements keep round figures (about 12,000
+apprentices, around 1,000 devices, more than five million public contracts) and drop the exact
+counts (12,032 profiles, 20,134 objects, 47,202 apprentices, 984 devices, 2,870 documents, 467
+tests, 25 tables).
+
+L12 (T6, T7): the internal CV's section 1 contact fields, section 9 education and certifications
+and the section 12 checklist were completed from the PDF, and a new human-facing section records
+the measured impact in percentages and time saved. Its per-project evidence tables were left
+intact on purpose (S11) because that document's stated contract is that every figure is traceable;
+the user was told and can ask for the same softening there.
