@@ -1,6 +1,7 @@
 export type I18n = string | { es: string; en: string };
 export interface DiagramCol { t: I18n; n: I18n[] }
-export interface Project { id: string; name: I18n; k: 'pro' | 'pers'; stk: string; d: { es: string; en: string }; cols: DiagramCol[] }
+export interface CaseStudy { context: I18n; solution: I18n; impact: I18n }
+export interface Project { id: string; name: I18n; k: 'pro' | 'pers'; stk: string; d?: { es: string; en: string }; case?: CaseStudy; cols: DiagramCol[] }
 
 export const PROJECTS: Project[] = [
   {
@@ -8,9 +9,19 @@ export const PROJECTS: Project[] = [
     "name": "PGAA",
     "k": "pro",
     "stk": "Next.js, TypeScript, Supabase, PostgreSQL, Redis, Docker",
-    "d": {
-      "es": "Plataforma para gestionar matrículas, validar documentos con IA, certificar y generar reportes de la operación diaria del centro: unos 12.000 aprendices. Control de acceso por roles y atributos con políticas de seguridad a nivel de fila (RLS) en todas las tablas, y un esquema pensado para crecer de uno a varios centros de formación.",
-      "en": "Platform to manage enrollments, validate documents with AI, issue certifications and generate reports for the center daily operation: around 12,000 apprentices. Role- and attribute-based access control with row-level security (RLS) on every table, and a schema built to grow from one training center to many."
+    "case": {
+      "context": {
+        "es": "Gestionar matrículas, validación documental, certificaciones y reportes para la operación diaria de unos 12.000 aprendices.",
+        "en": "Manage enrollments, document validation, certifications and reports for the daily operation of around 12,000 apprentices."
+      },
+      "solution": {
+        "es": "Una plataforma Next.js y TypeScript con validación documental mediante IA, control de acceso por roles y atributos, y un esquema preparado para varios centros.",
+        "en": "A Next.js and TypeScript platform with AI document validation, role- and attribute-based access control, and a schema designed for multiple centers."
+      },
+      "impact": {
+        "es": "Seguridad a nivel de fila en todas las tablas y una sola base para matrículas, certificaciones y reportes de la operación diaria.",
+        "en": "Row-level security on every table and one foundation for enrollments, certifications and daily operational reports."
+      }
     },
     "cols": [
       {
@@ -63,9 +74,19 @@ export const PROJECTS: Project[] = [
     "name": "Robot SGDEA / OnBase",
     "k": "pro",
     "stk": "Python, Playwright",
-    "d": {
-      "es": "Automatiza el ingreso de documentos de aprendices a los expedientes electrónicos: el tiempo por documento cae de unos 3 minutos a unos 13 segundos (cerca de un 93 % menos) con un 100 % de efectividad, lo que equivale a 17 jornadas de trabajo manual por campaña, con reanudación por puntos de control y trazabilidad de cada carga.",
-      "en": "Automates uploading apprentice documents into electronic case files: time per document drops from about 3 minutes to about 13 seconds (nearly 93% less) at 100% success, the equivalent of 17 working days of manual work per campaign, with checkpoint resume and a trace of every upload."
+    "case": {
+      "context": {
+        "es": "El ingreso de documentos de aprendices a los expedientes electrónicos requería cerca de 3 minutos por documento.",
+        "en": "Uploading apprentice documents into electronic case files required about 3 minutes per document."
+      },
+      "solution": {
+        "es": "Un robot en Python y Playwright con reanudación por puntos de control y trazabilidad de cada carga.",
+        "en": "A Python and Playwright robot with checkpoint resume and a trace of every upload."
+      },
+      "impact": {
+        "es": "Unos 13 segundos por documento: cerca de un 93 % menos tiempo, 100 % de efectividad y 17 jornadas de trabajo manual ahorradas por campaña.",
+        "en": "About 13 seconds per document: nearly 93% less time, 100% success and 17 working days of manual work saved per campaign."
+      }
     },
     "cols": [
       {
@@ -573,9 +594,19 @@ export const PROJECTS: Project[] = [
     "name": "Secopia",
     "k": "pers",
     "stk": "Next.js, TypeScript, Typesense, Redis, Docker",
-    "d": {
-      "es": "Buscador de contratación pública: consulta los datos abiertos de SECOP I y II sin registro ni CAPTCHA, con más de cinco millones de contratos y búsqueda instantánea sobre índice propio.",
-      "en": "Public procurement search: queries Colombia open SECOP I and II data with no signup or CAPTCHA, over five million contracts and instant search on its own index."
+    "case": {
+      "context": {
+        "es": "Reunir la contratación pública de los datos abiertos de SECOP I y II en una consulta ágil y accesible.",
+        "en": "Bring public procurement from Colombia's open SECOP I and II data into one fast, accessible search."
+      },
+      "solution": {
+        "es": "Un buscador en Next.js y TypeScript con índice propio en Typesense, Redis y despliegue en Docker.",
+        "en": "A Next.js and TypeScript search application with its own Typesense index, Redis and Docker deployment."
+      },
+      "impact": {
+        "es": "Más de cinco millones de contratos consultables con búsqueda instantánea, sin registro ni CAPTCHA.",
+        "en": "Over five million contracts available through instant search, with no signup or CAPTCHA."
+      }
     },
     "cols": [
       {

@@ -2,18 +2,27 @@
 import { PROJECTS } from '../data/projects';
 import ProjectCard from './ProjectCard.astro';
 
-/** The card that used to start open in the runtime version. */
+/** Three evidence-led cases lead; the complete archive stays one disclosure away. */
 const openId = 'pgaa';
+const featuredIds = ['pgaa', 'onbase', 'secopia'];
+const featured = featuredIds.map((id) => PROJECTS.find((p) => p.id === id)!);
+const archive = PROJECTS.filter((p) => !featuredIds.includes(p.id));
 import CodePanel from './CodePanel.astro';
 ---
 
 <section id="work" class="inv">
   <CodePanel index={3} />
   <div class="in relative z-[1] mx-auto max-w-[1400px]">
-    <div class="sh rv flex items-end justify-between gap-8 pb-[1.2rem] mb-[3.2rem] max-mq800:flex-col max-mq800:items-start max-mq800:gap-4"><h2 data-i18n="h.work">Trabajo</h2><p data-i18n="d.work">Lo que he puesto en producción y algunos proyectos propios. Abre cada uno para ver cómo está armado.</p></div>
+    <div class="sh rv flex items-end justify-between gap-8 pb-[1.2rem] mb-[3.2rem] max-mq800:flex-col max-mq800:items-start max-mq800:gap-4"><h2 data-i18n="h.work">Proyectos destacados</h2><p data-i18n="d.work">Contexto, solución e impacto de tres sistemas. El resto del trabajo sigue disponible en el archivo.</p></div>
     <ul class="plist" id="plist">
-      {PROJECTS.map((p) => <ProjectCard project={p} open={p.id === openId} />)}
+      {featured.map((p) => <ProjectCard project={p} open={p.id === openId} />)}
     </ul>
+    <details class="project-archive">
+      <summary class="archive-toggle"><span data-i18n="work.archive">Ver otros 11 proyectos</span><span class="plus" aria-hidden="true"></span></summary>
+      <ul class="plist archive-list">
+        {archive.map((p) => <ProjectCard project={p} open={false} />)}
+      </ul>
+    </details>
     <p class="stk" data-i18n="work.note">La mayor parte de este trabajo es software institucional y permanece privado por acuerdos de confidencialidad.</p>
   </div>
 </section>

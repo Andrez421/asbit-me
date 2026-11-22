@@ -63,6 +63,11 @@ section{position:relative;overflow:clip;padding:7.5rem var(--pad)}
    the no-JS rendering is what it always was. */
 .nojs .code{display:none}
 .hero-top{position:relative;z-index:1;max-width:44ch;font-size:clamp(1.02rem,1.5vw,1.22rem);line-height:1.5}
+.hero-actions{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.4rem}
+.action{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.65rem 1rem;border:1px solid var(--fg);font-size:.88rem;font-weight:500;transition:background-color .2s,color .2s}
+.action.primary{background:var(--fg);color:var(--bg)}
+.action.primary:hover{background:transparent;color:var(--fg)}
+.action:not(.primary):hover{background:var(--fg);color:var(--bg)}
 .name{position:relative;z-index:1;font-family:var(--disp);font-size:min(9.2vw,9.5rem);line-height:.9;letter-spacing:-.025em;margin:auto 0 2.4rem;padding-top:3rem}
 .name .ln{display:block;white-space:nowrap}
 .w{display:inline-block;white-space:nowrap}
@@ -116,10 +121,18 @@ section{position:relative;overflow:clip;padding:7.5rem var(--pad)}
 .plus::before,.plus::after{content:'';position:absolute;left:0;right:0;top:50%;height:1.5px;background:var(--fg);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
 .plus::after{transform:rotate(90deg)}
 .prow.open .plus::after{transform:rotate(0)}
+.project-archive{margin-top:1.5rem}
+.archive-toggle{display:flex;align-items:center;justify-content:space-between;gap:1rem;min-height:64px;cursor:pointer;list-style:none;font-size:.95rem;font-weight:500}
+.archive-toggle::-webkit-details-marker{display:none}
+.project-archive[open] .archive-toggle .plus::after{transform:rotate(0)}
+.archive-list{margin-top:1.5rem}
 .pbody{display:grid;grid-template-rows:0fr;transition:grid-template-rows .65s cubic-bezier(.2,.8,.2,1)}
 .prow.open .pbody{grid-template-rows:1fr}
 .pin{overflow:hidden;min-height:0}
 .pcont p{max-width:42ch;font-size:1.05rem}
+.case-study>div{padding:0 0 1rem;margin-bottom:1rem;border-bottom:1px solid var(--line)}
+.case-study dt{margin-bottom:.35rem;font:500 .72rem/1.4 var(--mono);color:var(--mid);text-transform:uppercase;letter-spacing:.06em}
+.case-study dd{max-width:42ch;font-size:1.02rem;line-height:1.55}
 .stk{margin-top:1.2rem;font:400 .8rem/1.7 var(--mono);color:var(--mid)}
 .diag{width:100%;height:auto;color:var(--fg);overflow:visible}
 .diag text{font:500 12px var(--mono);fill:currentColor}
