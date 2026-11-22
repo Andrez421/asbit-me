@@ -158,20 +158,6 @@ import { panelHtml, PANEL_LINES } from '../lib/panels';
       });
     }
   });
-  if (!reduce) {
-    const kio = new IntersectionObserver(
-      (es) =>
-        es.forEach((e) => {
-          if (e.isIntersecting) {
-            const kr = KIN.find((k) => k.root === e.target);
-            if (kr && kr.t0 == null) kr.t0 = performance.now();
-          }
-        }),
-      { threshold: 0.25 },
-    );
-    KIN.forEach((k) => kio.observe(k.root));
-  }
-
   /* ───────── marquee con velocidad de scroll ───────── */
   const MQ = [
     { el: $('#mq1'), items: ['TypeScript', 'Python', 'PostgreSQL', 'Docker', 'Linux'], dir: 1, off: 0, half: 1 },
@@ -199,8 +185,11 @@ import { panelHtml, PANEL_LINES } from '../lib/panels';
   const effectIo = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) visibleEffects.add(entry.target);
-        else visibleEffects.delete(entry.target);
+        if (entry.isIntersecting) {
+          visibleEffects.add(entry.target);
+          const kr = KIN.find((k) => k.root === entry.target);
+          if (kr && kr.t0 == null) kr.t0 = performance.now();
+        } else visibleEffects.delete(entry.target);
       });
       scheduleFrame();
     },
@@ -251,6 +240,7 @@ import { panelHtml, PANEL_LINES } from '../lib/panels';
   });
 
   function frame(t: number) {
+    rafId = 0;
     const dt = Math.min(0.05, (t - prev) / 1000 || 0.016);
     prev = t;
     const k = 1 - Math.exp(-dt * 8);
