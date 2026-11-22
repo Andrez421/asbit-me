@@ -158,20 +158,6 @@ import { panelHtml, PANEL_LINES } from '../lib/panels';
       });
     }
   });
-  if (!reduce) {
-    const kio = new IntersectionObserver(
-      (es) =>
-        es.forEach((e) => {
-          if (e.isIntersecting) {
-            const kr = KIN.find((k) => k.root === e.target);
-            if (kr && kr.t0 == null) kr.t0 = performance.now();
-          }
-        }),
-      { threshold: 0.25 },
-    );
-    KIN.forEach((k) => kio.observe(k.root));
-  }
-
   /* ───────── marquee con velocidad de scroll ───────── */
   const MQ = [
     { el: $('#mq1'), items: ['TypeScript', 'Python', 'PostgreSQL', 'Docker', 'Linux'], dir: 1, off: 0, half: 1 },
@@ -190,6 +176,30 @@ import { panelHtml, PANEL_LINES } from '../lib/panels';
   (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(measure);
   addEventListener('resize', measure);
   measure();
+
+  // Visibility is tracked outside the frame loop: offscreen roots do no layout
+  // work, hidden tabs cancel the pending frame, and reduced motion never starts
+  // a continuous animation loop.
+  const visibleEffects = new Set();
+  let rafId = 0;
+  const effectIo = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          visibleEffects.add(entry.target);
+          const kr = KIN.find((k) => k.root === entry.target);
+          if (kr && kr.t0 == null) kr.t0 = performance.now();
+        } else visibleEffects.delete(entry.target);
+      });
+      scheduleFrame();
+    },
+    { rootMargin: '120px 0px' },
+  );
+  if (!reduce) {
+    KIN.forEach((kr) => effectIo.observe(kr.root));
+    CS.forEach((c) => effectIo.observe(c.sec));
+    MQ.forEach((m) => effectIo.observe(m.el));
+  }
 
   /* ───────── puntero, lente y anillo ───────── */
   const hero = $('#home');
@@ -230,6 +240,7 @@ import { panelHtml, PANEL_LINES } from '../lib/panels';
   });
 
   function frame(t: number) {
+    rafId = 0;
     const dt = Math.min(0.05, (t - prev) / 1000 || 0.016);
     prev = t;
     const k = 1 - Math.exp(-dt * 8);
@@ -237,33 +248,32 @@ import { panelHtml, PANEL_LINES } from '../lib/panels';
     /* letras */
     if (!reduce)
       KIN.forEach((kr) => {
-        if (kr.t0 == null && kr.root === $('#name')) kr.t0 = t;
-        if (kr.t0 == null) return;
-        const rr = kr.root.getBoundingClientRect();
-        if (rr.bottom < -120 || rr.top > innerHeight + 120) return;
+        if (kr.t0 == null || !visibleEffects.has(kr.root)) return;
         const b = kr.base,
           s2 = 2 * b.sg * b.sg;
-        for (const L of kr.letters) {
-          if (t < kr.t0 + 250 + L.i * 38) continue;
-          if (!L.el.classList.contains('go')) L.el.classList.add('go');
-          let inf = 0;
-          if (!idle) {
-            const r = L.el.getBoundingClientRect(),
-              dx = r.left + r.width / 2 - px,
-              dy = r.top + r.height / 2 - py;
-            inf = Math.exp(-(dx * dx + dy * dy) / s2);
-          } else if (b.wave) {
-            inf = 0.55 * 0.5 * (Math.sin(t / 950 - L.i * 0.42) + 1);
-          }
+        const active = kr.letters.filter((L) => t >= kr.t0 + 250 + L.i * 38);
+        active.forEach((L) => L.el.classList.add('go'));
+        // Batch every layout read before any font-variation write. Interleaving
+        // them forced the browser to recalculate layout for the next letter.
+        const influences = idle
+          ? []
+          : active.map((L) => {
+              const r = L.el.getBoundingClientRect(),
+                dx = r.left + r.width / 2 - px,
+                dy = r.top + r.height / 2 - py;
+              return Math.exp(-(dx * dx + dy * dy) / s2);
+            });
+        active.forEach((L, i) => {
+          const inf = idle ? (b.wave ? 0.55 * 0.5 * (Math.sin(t / 950 - L.i * 0.42) + 1) : 0) : influences[i];
           L.cw += (b.w0 + (b.w1 - b.w0) * inf - L.cw) * k;
           L.cwd += (b.wd0 + (b.wd1 - b.wd0) * inf - L.cwd) * k;
           L.el.style.fontVariationSettings = `'wght' ${L.cw.toFixed(1)},'wdth' ${L.cwd.toFixed(1)}`;
-        }
+        });
       });
     /* lente de cada sección */
     if (!reduce)
       CS.forEach((c: any) => {
-        if (!c.hot) return;
+        if (!c.hot || !visibleEffects.has(c.sec)) return;
         const r = c.sec.getBoundingClientRect();
         if (r.bottom < 0 || r.top > innerHeight) return;
         let tx, ty;
@@ -297,13 +307,24 @@ import { panelHtml, PANEL_LINES } from '../lib/panels';
     sk += (Math.max(-9, Math.min(9, vel * 0.28)) - sk) * k;
     if (!reduce)
       MQ.forEach((m) => {
+        if (!visibleEffects.has(m.el)) return;
         m.off += m.dir * (0.55 + Math.abs(vel) * 0.5);
         const x = ((m.off % m.half) + m.half) % m.half;
         m.el.style.transform = `translate3d(${-x}px,0,0) skewX(${(-sk * m.dir).toFixed(2)}deg)`;
       });
-    requestAnimationFrame(frame);
+    scheduleFrame();
   }
-  requestAnimationFrame(frame);
+  function scheduleFrame() {
+    if (reduce || document.hidden || rafId || !visibleEffects.size) return;
+    rafId = requestAnimationFrame(frame);
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && rafId) {
+      cancelAnimationFrame(rafId);
+      rafId = 0;
+    } else scheduleFrame();
+  });
+  scheduleFrame();
 
   /* ───────── scroll: progreso, enunciado, reveal, menú activo ───────── */
   const prog = $('#prog');
@@ -443,7 +464,6 @@ import { panelHtml, PANEL_LINES } from '../lib/panels';
   const palList = $('#palList');
   let palSel = 0;
   let palItems: any[] = [];
-  let palLast: any = null;
   const norm = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   const isMac = /Mac|iPhone|iPad/.test(navigator.platform || '');
   $('#palBtn').textContent = isMac ? '⌘ K' : 'Ctrl K';
@@ -522,26 +542,28 @@ import { panelHtml, PANEL_LINES } from '../lib/panels';
       : `<li class="none">${T('Sin resultados', 'No results')}</li>`;
   }
   function openPal() {
-    palLast = document.activeElement;
+    if (pal.open) return;
     palIn.value = '';
     palIn.placeholder = T('Escribe un comando…', 'Type a command…');
     $('#palHint').textContent = T('↑↓ moverse   Enter ejecutar   Esc cerrar', '↑↓ move   Enter run   Esc close');
     palSel = 0;
     palRender();
-    pal.classList.add('open');
-    palIn.focus();
+    // `showModal()` is the whole focus machinery: it moves the dialog to the top
+    // layer, makes the rest of the page inert, focuses the `autofocus` command
+    // input, closes on Escape and hands the focus back to whatever was focused
+    // before once it closes. No manual trap, Escape handler or focus restore.
+    pal.showModal();
   }
   function closePal() {
-    if (!pal.classList.contains('open')) return;
-    pal.classList.remove('open');
-    if (palLast && palLast.focus) palLast.focus();
-    // `focus()` on a non-focusable element is a no-op, which used to leave the
-    // focus inside the palette's own hidden input: the keyboard handler then saw
-    // an INPUT as the active element and suppressed the `/` shortcut until the
-    // user clicked somewhere else. Blur whatever remains inside the dialog.
-    const ae: any = document.activeElement;
-    if (ae && pal.contains(ae) && typeof ae.blur === 'function') ae.blur();
+    if (pal.open) pal.close();
   }
+  // Every close comes from the browser (Escape, light dismiss or a command) and
+  // fires `close`; dropping the rendered options keeps the next open a fresh
+  // render and the closed dialog free of stale rows.
+  pal.addEventListener('close', () => {
+    palSel = 0;
+    palList.replaceChildren();
+  });
   palIn.addEventListener('input', () => {
     palSel = 0;
     palRender();
@@ -559,9 +581,6 @@ import { panelHtml, PANEL_LINES } from '../lib/panels';
       e.preventDefault();
       const c = palItems[palSel];
       if (c) c.run();
-    } else if (e.key === 'Escape') {
-      e.preventDefault();
-      closePal();
     }
   });
   palList.addEventListener('click', (e: any) => {
@@ -578,9 +597,23 @@ import { panelHtml, PANEL_LINES } from '../lib/panels';
       });
     }
   });
-  pal.addEventListener('pointerdown', (e: any) => {
-    if (e.target === pal) closePal();
-  });
+  // Light dismiss is native wherever the browser implements `closedby` (the
+  // dialog carries closedby="any"). Where it does not, the documented fallback
+  // compares the press and the release points with the dialog's own box, so a
+  // click or a drag that ends outside closes it and one that ends inside does not.
+  if (!('closedBy' in HTMLDialogElement.prototype)) {
+    let down: { x: number; y: number } | null = null;
+    const outside = (x: number, y: number) => {
+      const r = pal.getBoundingClientRect();
+      return x < r.left || x > r.right || y < r.top || y > r.bottom;
+    };
+    pal.addEventListener('pointerdown', (e: any) => (down = { x: e.clientX, y: e.clientY }));
+    pal.addEventListener('pointerup', (e: any) => {
+      const start = down;
+      down = null;
+      if (start && outside(start.x, start.y) && outside(e.clientX, e.clientY)) pal.close();
+    });
+  }
   $('#palBtn').addEventListener('click', openPal);
   addEventListener('keydown', (e: any) => {
     const ae: any = document.activeElement;
@@ -589,8 +622,8 @@ import { panelHtml, PANEL_LINES } from '../lib/panels';
       (/INPUT|TEXTAREA/.test(ae.tagName) && !pal.contains(ae)) || ae.isContentEditable;
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
       e.preventDefault();
-      pal.classList.contains('open') ? closePal() : openPal();
-    } else if (e.key === '/' && !typing && !pal.classList.contains('open')) {
+      pal.open ? closePal() : openPal();
+    } else if (e.key === '/' && !typing && !pal.open) {
       e.preventDefault();
       openPal();
     }

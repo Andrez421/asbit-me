@@ -1,8 +1,6 @@
-<div class="pal pap" id="pal" role="dialog" aria-modal="true" aria-label="Paleta de comandos">
-  <div class="pal-box">
-    <input id="palIn" type="text" autocomplete="off" spellcheck="false" aria-label="Comando" />
-    <ul class="pal-list" id="palList" role="listbox"></ul>
-    <div class="pal-foot" id="palHint"></div>
-  </div>
-</div>
+<dialog class="pal pap" id="pal" aria-label="Paleta de comandos" closedby="any">
+  <input id="palIn" type="text" autocomplete="off" spellcheck="false" aria-label="Comando" autofocus />
+  <ul class="pal-list" id="palList" role="listbox"></ul>
+  <div class="pal-foot" id="palHint"></div>
+</dialog>
 <div class="toast" id="toast" role="status"></div>

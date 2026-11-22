@@ -1,6 +1,7 @@
 /** English strings. Spanish lives in the markup (or is generated at build time),
  *  keyed by data-i18n; the runtime toggle swaps innerHTML in place. */
 export const EN: Record<string, string> = {
+  "a.skip": "Skip to content",
   "nav.about": "About",
   "nav.exp": "Experience",
   "nav.work": "Projects",
