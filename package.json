@@ -10,6 +10,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "i18n-check": "node tools/i18n-check.mjs",
+    "quality-check": "node tools/quality-check.mjs",
+    "interaction-check": "node tools/interaction-check.mjs",
+    "animation-check": "node tools/animation-check.mjs",
     "visual-check": "node tools/visual-check.mjs"
   },
   "dependencies": {
