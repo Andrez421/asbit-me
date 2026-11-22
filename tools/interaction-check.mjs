@@ -43,7 +43,7 @@ async function scenario(url) {
   await new Promise((r) => setTimeout(r, 500));
   const out = {};
   const text = (sel) => page.$eval(sel, (e) => e.textContent.trim()).catch(() => null);
-  const has = (sel) => page.$eval(sel, (e) => e.classList.contains('open')).catch(() => false);
+  const has = (sel) => page.$eval(sel, (e) => 'open' in e && e instanceof HTMLDialogElement ? e.open : e.classList.contains('open')).catch(() => false);
 
   out.mediaFine = await page.evaluate(() => matchMedia('(hover: hover) and (pointer: fine)').matches);
 
@@ -55,6 +55,16 @@ async function scenario(url) {
   out.paletteItems = await page.$$eval('#palList li', (ls) => ls.length);
   out.paletteHint = await text('#palHint');
   out.secretHidden = await page.$$eval('#palList li', (ls) => ls.some((l) => l.textContent.includes('sudo')));
+  out.paletteFocusContained = true;
+  for (let i = 0; i < 8; i++) {
+    await page.keyboard.press('Tab');
+    const escaped = await page.evaluate(() => {
+      const active = document.activeElement;
+      return active && active.tagName !== 'BODY' && !active.closest('#pal');
+    });
+    if (escaped) out.paletteFocusContained = false;
+  }
+  await page.focus('#palIn');
 
   /* filter, move and run */
   await page.type('#palIn', 'tra');
@@ -143,7 +153,7 @@ await browser.close();
 let diffs = 0;
 const SKIP = ['ring', 'ringOffPage', 'magnetTransform'];
 /** Differences that are the point of the change rather than a regression. */
-const EXPECTED = { paletteAfterEscapeNoBlur: true };
+const EXPECTED = { paletteAfterEscapeNoBlur: true, paletteFocusContained: true };
 for (const key of Object.keys(A)) {
   const same = JSON.stringify(A[key]) === JSON.stringify(B[key]);
   const skipped = !A.mediaFine && SKIP.includes(key);
