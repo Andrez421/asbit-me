@@ -1,5 +1,5 @@
 Objective: apply the audited portfolio improvements with truthful content, accessible interactions, efficient motion and complete social metadata.
-Branch: `feat/portfolio-improvements`; delivery: `ask-on-risk`; forecast: ~380 authored changed lines; runners: `pnpm build`, `pnpm i18n-check`, Puppeteer quality checks.
+Branch: `feat/portfolio-improvements`; delivery: `feature-branch-chain`; forecast: ~380 authored changed lines; runners: `pnpm build`, `pnpm i18n-check`, Puppeteer quality checks.
 
 ## Specs
 
@@ -14,8 +14,8 @@ S1. "procede a aplicar las mejoras, corregir incidencias y despues me recueras l
 T1 | S1 | parent | done | GREEN: `pnpm build`; i18n 190/190; `git diff --check`. Moved Work before Experience, featured PGAA/OnBase/Secopia with context/solution/impact, retained 11-project native archive and added Hero project/contact CTAs.
 T2 | S1 | gentle-ai-worker | done | GREEN: native dialog keyboard/focus/light-dismiss checks; build and i18n 191/191; 320/390/768 responsive checks; `git diff --check`. Added main landmark, bilingual skip link and coarse-pointer targets.
 T3 | S1 | parent | done | RED 13 hidden-tab frames/400ms → GREEN 0; build and i18n 191/191; no browser errors. Added visibility-driven scheduling, hidden-tab cancellation, no reduced-motion loop and batched kinetic-letter layout reads.
-T4 | S1 | parent | in_progress | Add Open Graph/Twitter/JSON-LD metadata, a real PNG social card, robots.txt and a static sitemap without adding dependencies.
-T5 | S1 | parent | pending | Add and run focused browser quality checks, full build/i18n checks and desktop/mobile visual inspection; update relevant documentation and record remaining extras.
+T4 | S1 | parent | done | GREEN: PNG dimensions 1200x630/180x180; built OG/Twitter/JSON-LD/robots/sitemap/assets assertions; build and i18n 191/191. Added reproducible SVG sources and static social/search metadata.
+T5 | S1 | parent | in_progress | Add and run focused browser quality checks, full build/i18n checks and desktop/mobile visual inspection; update relevant documentation and record remaining extras.
 
 ## Log
 
@@ -29,3 +29,6 @@ L1. "procede a aplicar las mejoras, corregir incidencias y despues me recueras l
 - T2 GREEN: repeated Tab/Shift+Tab never reached page controls; Escape, `/`, Ctrl+K, arrows, Enter, pointer selection and light dismiss passed; build, i18n 191/191, responsive and whitespace checks passed. Safari fallback not executed in WebKit.
 - T2 commit `08aaa8e`; cumulative committed ASSESS: medium risk, `reviewDue=false`, `under_budget`, 277 authored lines.
 - T3 RED: 13 animation frames in 400ms after simulated `document.hidden`; GREEN: 0 frames, no runtime errors, build and i18n passed.
+- T3 commit `5a75d68`; cumulative committed ASSESS: medium risk, `reviewDue=false`, `under_budget`, 350 authored lines.
+- User selected `feature-branch-chain` from the oversized-delivery menu before the T4 commit. Planned slices: PR1 content `6e502ee`; PR2 accessibility+performance `08aaa8e` + `5a75d68`; PR3 SEO+final quality commits. Tracker stays draft/no-merge if PRs are later requested; no publishing authorized here.
+- T4 GREEN: social PNG visually inspected; metadata, JSON-LD, robots, sitemap and copied assets asserted in `dist`; build and i18n passed.
