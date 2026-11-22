@@ -191,6 +191,27 @@ import { panelHtml, PANEL_LINES } from '../lib/panels';
   addEventListener('resize', measure);
   measure();
 
+  // Visibility is tracked outside the frame loop: offscreen roots do no layout
+  // work, hidden tabs cancel the pending frame, and reduced motion never starts
+  // a continuous animation loop.
+  const visibleEffects = new Set();
+  let rafId = 0;
+  const effectIo = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) visibleEffects.add(entry.target);
+        else visibleEffects.delete(entry.target);
+      });
+      scheduleFrame();
+    },
+    { rootMargin: '120px 0px' },
+  );
+  if (!reduce) {
+    KIN.forEach((kr) => effectIo.observe(kr.root));
+    CS.forEach((c) => effectIo.observe(c.sec));
+    MQ.forEach((m) => effectIo.observe(m.el));
+  }
+
   /* ───────── puntero, lente y anillo ───────── */
   const hero = $('#home');
   const ring = $('#ring');
@@ -237,33 +258,32 @@ import { panelHtml, PANEL_LINES } from '../lib/panels';
     /* letras */
     if (!reduce)
       KIN.forEach((kr) => {
-        if (kr.t0 == null && kr.root === $('#name')) kr.t0 = t;
-        if (kr.t0 == null) return;
-        const rr = kr.root.getBoundingClientRect();
-        if (rr.bottom < -120 || rr.top > innerHeight + 120) return;
+        if (kr.t0 == null || !visibleEffects.has(kr.root)) return;
         const b = kr.base,
           s2 = 2 * b.sg * b.sg;
-        for (const L of kr.letters) {
-          if (t < kr.t0 + 250 + L.i * 38) continue;
-          if (!L.el.classList.contains('go')) L.el.classList.add('go');
-          let inf = 0;
-          if (!idle) {
-            const r = L.el.getBoundingClientRect(),
-              dx = r.left + r.width / 2 - px,
-              dy = r.top + r.height / 2 - py;
-            inf = Math.exp(-(dx * dx + dy * dy) / s2);
-          } else if (b.wave) {
-            inf = 0.55 * 0.5 * (Math.sin(t / 950 - L.i * 0.42) + 1);
-          }
+        const active = kr.letters.filter((L) => t >= kr.t0 + 250 + L.i * 38);
+        active.forEach((L) => L.el.classList.add('go'));
+        // Batch every layout read before any font-variation write. Interleaving
+        // them forced the browser to recalculate layout for the next letter.
+        const influences = idle
+          ? []
+          : active.map((L) => {
+              const r = L.el.getBoundingClientRect(),
+                dx = r.left + r.width / 2 - px,
+                dy = r.top + r.height / 2 - py;
+              return Math.exp(-(dx * dx + dy * dy) / s2);
+            });
+        active.forEach((L, i) => {
+          const inf = idle ? (b.wave ? 0.55 * 0.5 * (Math.sin(t / 950 - L.i * 0.42) + 1) : 0) : influences[i];
           L.cw += (b.w0 + (b.w1 - b.w0) * inf - L.cw) * k;
           L.cwd += (b.wd0 + (b.wd1 - b.wd0) * inf - L.cwd) * k;
           L.el.style.fontVariationSettings = `'wght' ${L.cw.toFixed(1)},'wdth' ${L.cwd.toFixed(1)}`;
-        }
+        });
       });
     /* lente de cada sección */
     if (!reduce)
       CS.forEach((c: any) => {
-        if (!c.hot) return;
+        if (!c.hot || !visibleEffects.has(c.sec)) return;
         const r = c.sec.getBoundingClientRect();
         if (r.bottom < 0 || r.top > innerHeight) return;
         let tx, ty;
@@ -297,13 +317,24 @@ import { panelHtml, PANEL_LINES } from '../lib/panels';
     sk += (Math.max(-9, Math.min(9, vel * 0.28)) - sk) * k;
     if (!reduce)
       MQ.forEach((m) => {
+        if (!visibleEffects.has(m.el)) return;
         m.off += m.dir * (0.55 + Math.abs(vel) * 0.5);
         const x = ((m.off % m.half) + m.half) % m.half;
         m.el.style.transform = `translate3d(${-x}px,0,0) skewX(${(-sk * m.dir).toFixed(2)}deg)`;
       });
-    requestAnimationFrame(frame);
+    scheduleFrame();
   }
-  requestAnimationFrame(frame);
+  function scheduleFrame() {
+    if (reduce || document.hidden || rafId || !visibleEffects.size) return;
+    rafId = requestAnimationFrame(frame);
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && rafId) {
+      cancelAnimationFrame(rafId);
+      rafId = 0;
+    } else scheduleFrame();
+  });
+  scheduleFrame();
 
   /* ───────── scroll: progreso, enunciado, reveal, menú activo ───────── */
   const prog = $('#prog');
