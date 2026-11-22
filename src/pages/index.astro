@@ -16,12 +16,15 @@ import Overlays from '../components/Overlays.astro';
   description="Desarrollador Full Stack con experiencia en DevOps e infraestructura. Sistemas web, automatización e integración de IA, de la interfaz al servidor. Popayán, Colombia."
 >
   <Chrome />
+  <a class="skip" href="#main" data-i18n="a.skip">Saltar al contenido</a>
   <Nav />
-  <Hero />
-  <Work />
-  <About />
-  <Experience />
-  <Stack />
-  <Contact />
+  <main id="main" tabindex="-1">
+    <Hero />
+    <Work />
+    <About />
+    <Experience />
+    <Stack />
+    <Contact />
+  </main>
   <Overlays />
 </Base>

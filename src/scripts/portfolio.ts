@@ -443,7 +443,6 @@ import { panelHtml, PANEL_LINES } from '../lib/panels';
   const palList = $('#palList');
   let palSel = 0;
   let palItems: any[] = [];
-  let palLast: any = null;
   const norm = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   const isMac = /Mac|iPhone|iPad/.test(navigator.platform || '');
   $('#palBtn').textContent = isMac ? '⌘ K' : 'Ctrl K';
@@ -522,26 +521,28 @@ import { panelHtml, PANEL_LINES } from '../lib/panels';
       : `<li class="none">${T('Sin resultados', 'No results')}</li>`;
   }
   function openPal() {
-    palLast = document.activeElement;
+    if (pal.open) return;
     palIn.value = '';
     palIn.placeholder = T('Escribe un comando…', 'Type a command…');
     $('#palHint').textContent = T('↑↓ moverse   Enter ejecutar   Esc cerrar', '↑↓ move   Enter run   Esc close');
     palSel = 0;
     palRender();
-    pal.classList.add('open');
-    palIn.focus();
+    // `showModal()` is the whole focus machinery: it moves the dialog to the top
+    // layer, makes the rest of the page inert, focuses the `autofocus` command
+    // input, closes on Escape and hands the focus back to whatever was focused
+    // before once it closes. No manual trap, Escape handler or focus restore.
+    pal.showModal();
   }
   function closePal() {
-    if (!pal.classList.contains('open')) return;
-    pal.classList.remove('open');
-    if (palLast && palLast.focus) palLast.focus();
-    // `focus()` on a non-focusable element is a no-op, which used to leave the
-    // focus inside the palette's own hidden input: the keyboard handler then saw
-    // an INPUT as the active element and suppressed the `/` shortcut until the
-    // user clicked somewhere else. Blur whatever remains inside the dialog.
-    const ae: any = document.activeElement;
-    if (ae && pal.contains(ae) && typeof ae.blur === 'function') ae.blur();
+    if (pal.open) pal.close();
   }
+  // Every close comes from the browser (Escape, light dismiss or a command) and
+  // fires `close`; dropping the rendered options keeps the next open a fresh
+  // render and the closed dialog free of stale rows.
+  pal.addEventListener('close', () => {
+    palSel = 0;
+    palList.replaceChildren();
+  });
   palIn.addEventListener('input', () => {
     palSel = 0;
     palRender();
@@ -559,9 +560,6 @@ import { panelHtml, PANEL_LINES } from '../lib/panels';
       e.preventDefault();
       const c = palItems[palSel];
       if (c) c.run();
-    } else if (e.key === 'Escape') {
-      e.preventDefault();
-      closePal();
     }
   });
   palList.addEventListener('click', (e: any) => {
@@ -578,9 +576,23 @@ import { panelHtml, PANEL_LINES } from '../lib/panels';
       });
     }
   });
-  pal.addEventListener('pointerdown', (e: any) => {
-    if (e.target === pal) closePal();
-  });
+  // Light dismiss is native wherever the browser implements `closedby` (the
+  // dialog carries closedby="any"). Where it does not, the documented fallback
+  // compares the press and the release points with the dialog's own box, so a
+  // click or a drag that ends outside closes it and one that ends inside does not.
+  if (!('closedBy' in HTMLDialogElement.prototype)) {
+    let down: { x: number; y: number } | null = null;
+    const outside = (x: number, y: number) => {
+      const r = pal.getBoundingClientRect();
+      return x < r.left || x > r.right || y < r.top || y > r.bottom;
+    };
+    pal.addEventListener('pointerdown', (e: any) => (down = { x: e.clientX, y: e.clientY }));
+    pal.addEventListener('pointerup', (e: any) => {
+      const start = down;
+      down = null;
+      if (start && outside(start.x, start.y) && outside(e.clientX, e.clientY)) pal.close();
+    });
+  }
   $('#palBtn').addEventListener('click', openPal);
   addEventListener('keydown', (e: any) => {
     const ae: any = document.activeElement;
@@ -589,8 +601,8 @@ import { panelHtml, PANEL_LINES } from '../lib/panels';
       (/INPUT|TEXTAREA/.test(ae.tagName) && !pal.contains(ae)) || ae.isContentEditable;
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
       e.preventDefault();
-      pal.classList.contains('open') ? closePal() : openPal();
-    } else if (e.key === '/' && !typing && !pal.classList.contains('open')) {
+      pal.open ? closePal() : openPal();
+    } else if (e.key === '/' && !typing && !pal.open) {
       e.preventDefault();
       openPal();
     }

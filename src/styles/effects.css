@@ -52,6 +52,23 @@ section{position:relative;overflow:clip;padding:7.5rem var(--pad)}
 .menu.open{display:flex}
 .menu a{font:700 clamp(2.4rem,11vw,4rem)/1.15 var(--disp);font-variation-settings:'wdth' 80;letter-spacing:-.03em}
 
+/* salto al contenido: fuera de la vista hasta que recibe el foco */
+.skip{position:fixed;left:var(--pad);top:.6rem;z-index:130;padding:.6rem 1rem;background:var(--pfg);color:var(--pbg);font:500 .9rem var(--sans);transform:translateY(calc(-100% - 1rem));transition:transform .2s}
+.skip:focus{transform:none}
+
+/* Áreas activas: crecen con un pseudo-elemento, así la composición (tamaños,
+   gaps y alineación) no cambia. 24px como mínimo con puntero fino y ~44px
+   cuando el puntero es grueso. */
+.brand::before,.menu-links a::before,.tools button::before,.ct-row a::before,.ct-row button::before{content:'';position:absolute;inset:-6px}
+@media(pointer:coarse){
+  .brand::before,.menu-links a::before{inset:-11px -8px}
+  /* el gap de las filas de contacto es una utilidad de Tailwind (capa posterior):
+     subirlo para el dedo necesita !important, igual que `.burger`. */
+  .ct-row{gap-y:1.4rem!important}
+  .ct-row a::before,.ct-row button::before{inset:-8px -10px}
+  .tools button::before{inset-block:-8px;inset-inline:-7px}
+}
+
 /* hero */
 .hero{padding:7.5rem var(--pad) 1.4rem}
 .code{position:absolute;inset:0;z-index:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2.5rem;padding:5rem var(--pad) 0;font:400 12.5px/1.8 var(--mono);color:var(--fg);pointer-events:none;overflow:hidden;user-select:none}
@@ -190,13 +207,16 @@ section .code.hot{color:var(--acc)}
 /* atajo y paleta de comandos */
 .tools .kbd{font:500 .72rem var(--mono);padding:0 .55rem;height:26px;border:1px solid var(--line);color:var(--mid);transition:color .3s,border-color .3s}
 .tools .kbd:hover{color:var(--fg);border-color:var(--fg)}
-.pal{position:fixed;inset:0;z-index:120;display:none;align-items:flex-start;justify-content:center;padding:14vh var(--pad) 0;background:color-mix(in srgb,var(--pbg) 55%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
-.pal.open{display:flex;animation:palIn .25s ease}
+.pal{position:fixed;inset:0 0 auto 0;margin:14vh auto 0;padding:0;width:min(600px,calc(100% - 2*var(--pad)));max-width:none;background:var(--bg);color:var(--fg);border:1px solid var(--line);box-shadow:0 30px 80px -30px rgba(0,0,0,.5);overscroll-behavior:contain}
+/* modal nativo: el diálogo es la caja misma, así el clic fuera de ella cae en el
+   ::backdrop y `closedby="any"` lo descarta; el foco, Escape y la vuelta del
+   foco los pone el navegador. El scroll se contiene aquí, sin bloquear html/body. */
+.pal[open]{animation:palIn .25s ease}
+.pal::backdrop{background:color-mix(in srgb,var(--pbg) 55%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);overscroll-behavior:contain}
 @keyframes palIn{from{opacity:0}}
-.pal-box{width:min(600px,100%);background:var(--bg);color:var(--fg);border:1px solid var(--line);box-shadow:0 30px 80px -30px rgba(0,0,0,.5)}
 #palIn{width:100%;padding:1.1rem 1.3rem;font:500 1.15rem var(--disp);font-variation-settings:'wdth' 90;background:transparent;border:0;border-bottom:1px solid var(--line);color:var(--fg);outline:none}
 #palIn::placeholder{color:var(--mid)}
-.pal-list{max-height:min(52vh,420px);overflow:auto;padding:.4rem 0}
+.pal-list{max-height:min(52vh,420px);overflow:auto;overscroll-behavior:contain;padding:.4rem 0}
 .pal-list li{padding:.62rem 1.3rem;cursor:pointer;font-size:.95rem;border-left:2px solid transparent}
 .pal-list li.sel{background:color-mix(in srgb,var(--fg) 7%,transparent);border-left-color:var(--acc)}
 .pal-list li.none{cursor:default;color:var(--mid)}
